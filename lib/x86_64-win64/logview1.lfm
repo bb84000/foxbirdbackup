@@ -1,0 +1,76 @@
+object FLogView: TFLogView
+  Left = 695
+  Height = 588
+  Top = 194
+  Width = 781
+  Caption = 'Journal de FoxbirdBackup'
+  ClientHeight = 588
+  ClientWidth = 781
+  Position = poMainFormCenter
+  LCLVersion = '2.0.2.0'
+  object PnlBtns: TPanel
+    Left = 0
+    Height = 50
+    Top = 538
+    Width = 781
+    Align = alBottom
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 50
+    ClientWidth = 781
+    TabOrder = 0
+    object BtnQuit: TButton
+      Left = 296
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'Quitter'
+      ModalResult = 11
+      TabOrder = 0
+    end
+    object BtnPrint: TButton
+      Left = 424
+      Height = 25
+      Top = 10
+      Width = 75
+      Caption = 'Imprimer'
+      OnClick = BtnPrintClick
+      TabOrder = 1
+    end
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Height = 506
+    Top = 32
+    Width = 781
+    Align = alClient
+    ItemHeight = 0
+    MultiSelect = True
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 781
+    Align = alTop
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 32
+    ClientWidth = 781
+    TabOrder = 2
+    object LSelLines: TLabel
+      Left = 16
+      Height = 15
+      Top = 8
+      Width = 752
+      AutoSize = False
+      Caption = 'Sélectionnez les lignes que vous voulez impimer, à défaut tout le journal sera imprimé !'
+      ParentColor = False
+    end
+  end
+  object PrintDialog1: TPrintDialog
+    left = 99
+    top = 424
+  end
+end

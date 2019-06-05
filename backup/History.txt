@@ -1,0 +1,103 @@
+﻿FoxBirdBackup
+
+Firefox & Thunderbird Profile Backup
+
+Version 0.1.0.1 - 27/02/2011
+Version de test, uniquement la restauration complète fonctionne.
+
+Version 0.1.0.2 - 27/02/2011
+Création du répertoire du profil s'il n'existe pas
+Pas de restauration si Firefox est actif
+
+Version 0.2.0.1
+Restauration partielle fonctionnelle
+
+Version 0.3.0.1 - 01/03/2011
+Importation et exportation de backups externes.
+Menu popup dans la liste des backups, restore et delete
+
+Version 0.4.0.1 - 02/03/2011
+Version bilingue
+
+Version 0.5.0.1 - 02/03/2011
+Ajout d'une boite a propos
+Dialogue de sélection du dossier d'export
+Champs non modifiables en grisé
+Une seule instance possible
+Mise à jour des profils en cas de création d'un nouveau profil
+
+Version 0.5.0.2 - 02/03/2011
+Correction d'un bug dans la génération de profile ini (path relatif)
+
+Version 0.5.0.3 - 03/03/2011
+Modification de la routine de restauration
+Diverses optimisations
+
+Version 0.5.0.4 - 10/03/2011
+Correction de bugs d'affichages des notifications (%s manquants)
+Lien de recherche de mises à jour
+
+Version 0.5.1.0 - 14/03/2011
+Changement du path dans le commentaire des sauvegardes importées
+Tri par date de la liste des sauvegardes
+
+Version 1.0.0.0 - 23/08/2011
+Ajout de la sauvegarde de profil Thunderbird
+
+Version 1.0.0.1 - 31/08/2011
+Changement de nom
+Modification de la procédure AboutBox
+Activation de la sauvegarde partielle de Thunderbird
+
+Version 1.0.0.2 - 10/10/2011
+Correction du nom du fichier de sauvegarde
+Affichage du dossier de sauvegarde dès le lancement
+
+Version 1.0.0.3 - 05/11/2012
+Corection d'un bug d'affichage (champ Thunderbird trop long)
+
+Version 1.0.0.4 - 17/03/2013
+Compatibilité avec Windows 8
+Changement d'icone reflétant la sauvegarde de FF ou de TB
+Correction d'une erreur des boîtes de messages
+Réorganisation des commandes pour qu'elles concernent les deux onglets
+Ajout d'un bouton quitter
+Correction du bug avec la touche Alt
+
+Version 1.0.0.5 - 07/06/2013
+Prise en compte du programme sélectionné et du nombre de sauvegardes effectuées
+pour l'activation/désactivation du bouton de restauration.
+Correction du bug désactivant le bouton de sauvegarde si aucune sauvegarde
+n'a été encore effectuée.
+
+Version 1.0.0.6 - 29/06/2013
+Correction du bug qui ne sauvegardait pas les sous-répertoires
+
+Version 1.0.0.7 - 25/12/2016
+Désctivation du bouton "Fermer" et du changement d'onglet pendant la création et la restauration d'une sauvegarde
+
+Version 1.0.0.8 - 05/03/2017
+Pour éviter toute erreur dans le nom du dossier de profil restauré, le nom du dossier n'est pas localisé.
+
+Version 1.1.0.0 -02/06/2019 
+Réécriture du programme en Free Pascal, EDI Lazarus : versions Windows 64 et 32 bits et Linux
+Prise en compte de la nouvelle structure de profils de Mozilla
+Préservation du profil avant une restauration totale
+Utilisation des routines de compression/décompression Abbrevia de Turbo Power Software
+(Mozilla Public Licese 1.1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

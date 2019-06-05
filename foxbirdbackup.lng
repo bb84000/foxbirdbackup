@@ -1,0 +1,134 @@
+;Languages File/Fichier de langues
+;It is possible to create a new language using its ID as new section
+;Il est possible de créer une nouvelle langue en utilisant son identifiant
+;Danish	[da], Dutch [nl], Finnish [fi], German [de], Greek [el], Hungarian [hu]
+;Icelandic [is], Italian [it], Norwegian [no], Polish [pl], Portuguese [pt]
+;Russian [ru], Serbo Croatian [sr], Slovak [sk], Swedish [sv], Turkish [tr]
+
+;Save this file in a secure place if you change it, it will be replaced by any update !
+;you wiill probably need to add some items.
+;Submit your translation on my site or GitHub
+
+;English
+[en]
+;General
+Language=English
+caption_prefix=%s profile backup
+Aboutbox.Caption=About FoxBirdBackup
+AboutBox.LUpdate.Caption=Search update
+; Diverse strings
+default_profile_caption=%s (default profile)
+delete_backup_title=Delete a backup
+delete_backup_caption=Do you want really delete the backup "%s" ?
+cannot_delete_bk_caption=Cannot delete the file "%s".
+btn_yes_caption=Yes
+btn_no_caption=No
+btn_abort_caption=Abort
+btn_cancel_caption=Cancel
+btn_backup_caption=Backup
+btn_restore_caption=Restore
+btn_import_caption=Import
+btn_export_caption=Export
+cannot_save_app_open=%s is running, cancelling operation
+cannot_restore_profile_locked=Cannot restore the backup.%s Profile locked or unavailable.
+restore_path_caption=Restore path
+export_path_caption=Export path
+cannot_export=Cannot export %s,%ssee log file for more details"
+cannot_import=Cannot import "%s,%ssee log file for more details"
+import_filter=ZIP Files|*.zip
+backup_name_to_import=Backup to import
+; Backup tab
+TSBackup.Caption=Backup creation
+LPath.Caption= Profile path
+LBackFolder.Caption=Backup path
+LBackName.Caption=Backup name
+LLastBackup.Caption=Last backup
+LLastBkDate.Caption=Date
+BtnBack.Caption=Backup
+BtnQuit.Caption=Quit
+BtnAbout.Caption=About
+;Restore tab
+TSRestore.Caption=Backup management and restore
+LProfName.Caption=Profile name
+LBackupDate.Caption=Backup date
+GroupBox1.Caption=Type
+RBComplete.Caption=Full
+RBPartial.Caption=Partial
+RBExport.Caption=Export
+RBImport.Caption=Import
+CBFav.Caption=Bookmarks, history
+CBPass.Caption=Passwords
+CBAutoComp.Caption=Autocomplete forms
+CBUserStyle.Caption=User styles
+CBCookies.Caption=Cookies
+CBSearch.Caption=Search engines
+CBApps.Caption=Applications
+CBSitePrefs.Caption=Sites preferences
+CBCertif.Caption=Certificates
+CBExt.Caption=Addons
+CBUserPref.Caption=User preferences
+CBAddress.Caption=Address book
+RestProfSel.Caption=Select profil to restore
+
+;Français
+[fr]
+;General
+Language=Français
+caption_prefix=Sauvegarde de profil %s
+Aboutbox.Caption=A propos de FoxBirdBackup
+AboutBox.LUpdate.Caption=Recherche de mise à jour
+; Diverse strings
+default_profile_caption=%s (profil par défaut)
+delete_backup_title=Supprimer une sauvegarde
+delete_backup_caption=Voulez-vous supprimer la sauvegarde "%s" ?
+cannot_delete_bk_caption=Impossible de supprimer le fichier "%s".
+btn_yes_caption=Oui
+btn_no_caption=Non
+btn_abort_caption=Abandon
+btn_cancel_caption=Annuler
+btn_backup_caption=Sauvegarder
+btn_restore_caption=Restaurer
+btn_import_caption=Importer
+btn_export_caption=Exporter
+cannot_export=Exportation de "%s" impossible,%svoir le fichier log pour plus de détails
+cannot_import=Importation de "%s" impossible,%svoir le fichier log pour plus de détails
+import_filter=Fichiers ZIP|*.zip
+cannot_save_app_open=%s est ouvert, annulation de l'opération
+cannot_restore_profile_locked=Impossible de restaurer la sauvegarde.%s Profil verrouillé ou inacessible
+restore_path_caption=Chemin de restauration
+export_path_caption=Chemin d'exportation
+backup_name_to_import=Sauvegarde à importer
+;Backup tab
+TSBackup.Caption=Création de sauvegarde
+LPath.Caption=Chemin du profil
+LBackFolder.Caption=Chemin de  la sauvegarde
+LBackName.Caption=Nom de la sauvegarde
+LLastBackup.Caption=Dernière sauvegarde
+LLastBkDate.Caption=Date
+BtnBack.Caption=Sauvegarder
+BtnQuit.Caption=Quitter
+BtnAbout.Caption=A propos
+;Restore tab
+TSRestore.Caption=Gestion et restauration de sauvegarde
+LProfName.Caption=Nom du profil
+LBackupDate.Caption=Date sauvegarde
+GroupBox1.Caption=Type
+RBComplete.Caption=Complète
+RBPartial.Caption=Partielle
+RBExport.Caption=Exportation
+RBImport.Caption=Importation
+CBFav.Caption=Favoris, historique
+CBPass.Caption=Mots de passe
+CBAutoComp.Caption=Formulaires
+CBUserStyle.Caption=Styles utilisateur
+CBCookies.Caption=Cookies
+CBSearch.Caption=Moteurs de recherche
+CBApps.Caption=Applications
+CBSitePrefs.Caption)Préférences de sites
+CBCertif.Caption=Certificats
+CBExt.Caption=Extensions
+CBUserPref.Caption=Préférences utilisateur
+CBAddress.Caption=Carnet d'adresses
+; profile selection
+RestProfSel.Caption=Sélection du profil à restaurer
+

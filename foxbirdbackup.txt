@@ -1,0 +1,75 @@
+Firefox and Thunderbird Profile Backup
+FoxBirdBackup Version 1.1.0.0
+
+(Explication en Français à la fin de ce fichier)
+
+OBJECT
+Save and restore :
+Mozilla Firefox  profiles.
+Thunderbird profiles
+
+INSTALLATION
+Extract archive and run InstallFireback.exe, then follow instructions of the setup program.
+
+USAGE
+The first panel, Backup creation, lists current user profiles.
+User can backup or modify a profile.
+
+The second panel, Restoration and backup management, lists backups previously done
+or imported. User can restore a backup in the profile location. User can export a backup on a different folder
+or drive. He can import an external backup archive.
+Imported archives are then listed in the second panel. Modifications include
+change of profile name and default activation of a profile.
+
+UNINSTALLATION
+Use control panel's program management system to uninstall the program.
+
+NOTICE
+Fireback software can be used free of charge for a non commercial use.
+
+
+Use Fireback at your own risks. Profiles manipulation can corrupt or lose critical data.
+
+Mozilla, Firefox names and logos are property of Mozilla Foundation.
+
+Sauvegarde de profil Firefox  et Thunderbird
+
+FoxBirdBackup Version 1.0.0.8
+
+OBJET
+Sauvegarde et restaure les profils
+Mozilla Firefox
+Thunderbird
+
+INSTALLATION
+Extraire l'archive et exécuter InstallFireback.exe, puis suivre les instructions
+du programme d'installation.
+
+UTILISATION
+Le premier onglet, Création de sauvegardes, liste les profils de
+l'utilisateur courant. L'utilisateur peut sauvegarder un profil.
+
+Le second onglet, Restauration et gestion de sauvegardes, liste les sauvegardes
+précédemment effectuées ou importées. L'utilisateur peut restaurer une sauvegarde
+a l'emplacement du profil actuel ou a un autre emplacement. Si l'utilisateur choisit
+de ne pas écraser le profil actuel, le progamme crée et active un novueau profil.
+L'utilisateur peut exporter une sauvegarde archivée dans un dossier ou un disque différent.
+Il peut importer une sauvegarde archivée externe. Les archives importée sont ensuite listées
+dans le second onglet.
+
+DESINSTALLATION
+Utiliser le système de gestion de programmes du panneau de configuration pour
+désinstaller le programme.
+
+NOTICE
+Le logiciel FoxBirdBackup peut être utilisé gratuitement pour une utilisation non commerciale.
+
+
+Utilisez FoxBirdBackup à vos risques et périls. La manipulation des profils peut corrompre
+ou détruire des données critiques.
+
+Les noms et logos Mozilla, Firefox sont la propriétés de la Fondation Mozilla.
+
+SDTP - bb95 - june 2019
+Web : http://www.sdtp.com
+
