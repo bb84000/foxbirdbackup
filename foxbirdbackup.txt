@@ -1,4 +1,4 @@
-Firefox and Thunderbird Profile Backup
+﻿Firefox and Thunderbird Profile Backup
 FoxBirdBackup Version 1.1.0.0
 
 (Explication en Français à la fin de ce fichier)
@@ -10,6 +10,7 @@ Thunderbird profiles
 
 INSTALLATION
 Extract archive and run InstallFireback.exe, then follow instructions of the setup program.
+Installer install the proper version regarding 32 or 64 bit OS.
 
 USAGE
 The first panel, Backup creation, lists current user profiles.
@@ -44,6 +45,7 @@ Thunderbird
 INSTALLATION
 Extraire l'archive et exécuter InstallFireback.exe, puis suivre les instructions
 du programme d'installation.
+L'installateur installe la version correspondant au SE, 32 ou 64 bits.
 
 UTILISATION
 Le premier onglet, Création de sauvegardes, liste les profils de
