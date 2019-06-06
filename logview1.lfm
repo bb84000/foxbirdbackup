@@ -1,7 +1,7 @@
 object FLogView: TFLogView
-  Left = 695
+  Left = 975
   Height = 588
-  Top = 194
+  Top = 209
   Width = 781
   Caption = 'Journal de FoxbirdBackup'
   ClientHeight = 588
@@ -36,6 +36,15 @@ object FLogView: TFLogView
       Caption = 'Imprimer'
       OnClick = BtnPrintClick
       TabOrder = 1
+    end
+    object Label1: TLabel
+      Left = 16
+      Height = 15
+      Top = 10
+      Width = 202
+      AutoSize = False
+      Caption = 'Label1'
+      ParentColor = False
     end
   end
   object ListBox1: TListBox

@@ -1,11 +1,8 @@
 ;Installation script for FoxBirdBackup
 
 ;--------------------------------
-;Include Modern UI
 
   !include MUI2.nsh
-  ;include MUI_LANGUE_DISPLAY and CloseApp macros
-
   !include "${NSISDIR}\Contrib\Modern UI\BB.nsh"
   !include x64.nsh
   !include FileFunc.nsh
@@ -30,11 +27,8 @@
   ;Folder selection page
   InstallDir "$PROGRAMFILES\foxbirdbackup"
 
-  ;Get install folder from registry if available
-  ;InstallDirRegKey HKCU "Software\SDTP\FoxBirdBackup" "InstallDir"
-
   ;--------------------------------
-;Interface Settings
+; Interface Settings
 
   !define MUI_ABORTWARNING
 
@@ -57,7 +51,6 @@
   !insertmacro MUI_PAGE_LICENSE $(licence)
   ;!insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
- ; !insertmacro MUI_DEFAULT MUI_FINISHPAGE_TEXT_REBOOT "$(MUI_${MUI_PAGE_UNINSTALLER_PREFIX}TEXT_FINISH_INFO_REBOOT)"
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_WELCOME

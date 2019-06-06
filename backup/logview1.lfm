@@ -1,7 +1,7 @@
 object FLogView: TFLogView
-  Left = 695
+  Left = 975
   Height = 588
-  Top = 194
+  Top = 209
   Width = 781
   Caption = 'Journal de FoxbirdBackup'
   ClientHeight = 588
@@ -37,59 +37,49 @@ object FLogView: TFLogView
       OnClick = BtnPrintClick
       TabOrder = 1
     end
+    object Label1: TLabel
+      Left = 16
+      Height = 15
+      Top = 10
+      Width = 202
+      AutoSize = False
+      Caption = 'Label1'
+      ParentColor = False
+    end
   end
-  object Notebook1: TNotebook
+  object ListBox1: TListBox
     Left = 0
-    Height = 538
+    Height = 506
+    Top = 32
+    Width = 781
+    Align = alClient
+    ItemHeight = 0
+    MultiSelect = True
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 32
     Top = 0
     Width = 781
-    PageIndex = 0
-    Align = alClient
-    TabOrder = 1
-    object Page1: TPage
-      object ListBox1: TListBox
-        Left = 0
-        Height = 506
-        Top = 32
-        Width = 781
-        Align = alClient
-        ItemHeight = 0
-        MultiSelect = True
-        TabOrder = 0
-      end
-      object Panel1: TPanel
-        Left = 0
-        Height = 32
-        Top = 0
-        Width = 781
-        Align = alTop
-        BevelInner = bvRaised
-        BevelOuter = bvLowered
-        ClientHeight = 32
-        ClientWidth = 781
-        TabOrder = 1
-        object Label2: TLabel
-          Left = 16
-          Height = 15
-          Top = 8
-          Width = 752
-          AutoSize = False
-          Caption = 'Sélectionnez les lignes que vous voulez impimer, à défaut tout le journal sera imprimé !'
-          ParentColor = False
-        end
-      end
-      object Label1: TLabel
-        Left = 389
-        Height = 15
-        Top = 33
-        Width = 34
-        Caption = 'Label1'
-        ParentColor = False
-      end
+    Align = alTop
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 32
+    ClientWidth = 781
+    TabOrder = 2
+    object LSelLines: TLabel
+      Left = 16
+      Height = 15
+      Top = 8
+      Width = 752
+      AutoSize = False
+      Caption = 'Sélectionnez les lignes que vous voulez impimer, à défaut tout le journal sera imprimé !'
+      ParentColor = False
     end
   end
   object PrintDialog1: TPrintDialog
     left = 99
-    top = 72
+    top = 424
   end
 end

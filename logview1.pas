@@ -15,6 +15,7 @@ type
   TFLogView = class(TForm)
     BtnQuit: TButton;
     BtnPrint: TButton;
+    Label1: TLabel;
     LSelLines: TLabel;
     ListBox1: TListBox;
     Panel1: TPanel;
@@ -41,7 +42,12 @@ implementation
 procedure TFLogView.BtnPrintClick(Sender: TObject);
 var
   i: integer;
-  linescount: integer;
+  txtheight: Integer;
+  linespacing: integer;
+  Lmargin, TMargin: Integer;
+  Bmarginpos: Integer;
+  XPos, YPos: integer;
+  scaleFactor: double;
 begin
   if listbox1.SelCount > 0 then
   begin
@@ -54,31 +60,39 @@ begin
   end;
   if PrintDialog1.Execute then
   begin
-    Printer.BeginDoc;
     Printer.Canvas.Font.Size := 8;
-    linescount:= 0;
+    scaleFactor:=Printer.YDPI / Screen.PixelsPerInch;
+    txtheight:= Printer.Canvas.TextHeight('Text Height');
+    FlogView.Canvas.Font.Size := 8;
+    Label1.Caption:= INtToStr(FlogView.Canvas.TextHeight('Text Height'));
+    txtheight:= trunc(txtheight*scalefactor);
+    TMargin:= Printer.YDPI div 3; // 1/3 inch
+    LMargin:= Printer.XDPI div 3; // 1/3 inch
+    BMarginpos:= Printer.PageHeight - TMargin;
+    linespacing:= txtheight;
+    Xpos:= LMargin;
+    Ypos:= TMargin;
+    Printer.BeginDoc;
     for i:= 0 to ListBox1.count -1 do
     begin
       if PrintDialog1.PrintRange= prSelection then
       begin
         if listbox1.selected[i]  then
         begin
-           inc (linescount);
-           Printer.Canvas.TextOut(0, trunc(80*linescount), ListBox1.Items.Strings[i]);
+           Printer.Canvas.TextOut(Xpos, YPos, ListBox1.Items.Strings[i]);
+           Ypos:= Ypos+Linespacing;
         end ;
       end else
       begin
-        inc (linescount);
-        Printer.Canvas.TextOut(0, trunc(80*linescount), ListBox1.Items.Strings[i]);
+        Printer.Canvas.TextOut(Xpos, Ypos, ListBox1.Items.Strings[i]);
+        Ypos:= Ypos+Linespacing;
       end;
-      if linescount > 80 then
+      if Ypos > BMarginpos then
       begin
-      linescount:= 0;
-      Printer.NewPage;
-
-      end;
-
-    end;
+        Ypos:= Tmargin;
+        Printer.NewPage;
+       end;
+     end;
     Printer.EndDoc;
   end
 end;

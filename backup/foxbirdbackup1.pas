@@ -170,6 +170,7 @@ type
     import_filter: string;
     restore_path_caption, export_path_caption, backup_name_to_import : string;
     progres : Integer;
+    wxbitsrun: Integer;
     procedure ModLangue;
     function ListProfiles(app: TMozApp): boolean;
     function ListBackups(app: TMozApp): boolean;
@@ -224,9 +225,10 @@ begin
      LangStr:=GetEnvironmentVariable('LANG');
      x:= pos('.', LangStr);
      LangStr:= Copy(LangStr,0, 2);
+     wxbitsrun:= 0;
   {$ENDIF}
   {$IFDEF WINDOWS}
-     OS:= 'Windows';
+     OS:= 'Windows ';
      CRLF:= #13#10;
      // get user data folder
      s:= ExtractFilePath(ExcludeTrailingPathDelimiter(GetAppConfigDir(False)));
@@ -235,6 +237,13 @@ begin
      ffpath:= UserAppsDataPath+'Mozilla'+PathDelim+'Firefox'+PathDelim; //Profiles\<profile folder>
      tbpath:= UserAppsDataPath+'Thunderbird'+PathDelim;
      LazGetShortLanguageID(LangStr);
+     If DirectoryExists('C:\Windows\SysWOW64') then wxbitsrun:= 64 else wxbitsrun:= 32;
+  {$ENDIF}
+  {$IFDEF WIN32}
+      OSTarget:= '32 bits';
+  {$ENDIF}
+  {$IFDEF WIN64}
+      OSTarget:= '64 bits';
   {$ENDIF}
   // Compilation date/time
   try
@@ -288,7 +297,8 @@ end;
 // Activation de la forme
 
 procedure TFoxBirdBack.FormActivate(Sender: TObject);
-
+var
+  s: string;
 begin
    // On n'exécute ça qu'une fois, au lancement, c'est Firefox qui est sélectionné par défaut
    if first then
@@ -302,14 +312,15 @@ begin
      LRestPath.Caption:= restore_path_caption;
     //Aboutbox.Caption:= 'A propos de FoxBirdBackup';            // in ModLangue
     AboutBox.Image1.Picture.Icon.LoadFromResourceName(HInstance, 'iffox');  ;
-    AboutBox.LProductName.Caption:= GetVersionInfo.ProductName+' ('+OS+')';
+    AboutBox.LProductName.Caption:= GetVersionInfo.ProductName+' ('+OS+OSTarget+')';
     AboutBox.LCopyright.Caption:= GetVersionInfo.CompanyName+' - '+DateTimeToStr(CompileDateTime);
     AboutBox.LVersion.Caption:= 'Version: '+Version;
     AboutBox.UrlUpdate:= UpdateURl+Version;
     //AboutBox.LUpdate.Caption:= 'Recherche de mise à jour';      // in Modlangue
     AboutBox.UrlWebsite:=GetVersionInfo.Comments;
     PageControl1.ActivePage:= TSBackup;
-    PStatus.Caption:= ' '+OS;
+    if wxbitsrun > 0 then s:= ' '+IntToStr(wxbitsrun)+' bits' else s:= '';
+    PStatus.Caption:= ' '+OS+s;
     EProfilePath.Text:= ffpath;
     EBackfolder.Text:= FireBack;
     ProfileType:= ff;
@@ -801,9 +812,6 @@ begin
   FLogView.ListBox1.ItemIndex:= -1;
   FLogView.ListBox1.Items.Text := LogSession.Text; ;
   FLogView.showmodal;
-
-  //RVLog.AddText(LogSession);
-
 end;
 
 procedure TFoxBirdBack.BtnAboutClick(Sender: TObject);

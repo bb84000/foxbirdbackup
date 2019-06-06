@@ -79,13 +79,13 @@ Désctivation du bouton "Fermer" et du changement d'onglet pendant la création 
 Version 1.0.0.8 - 05/03/2017
 Pour éviter toute erreur dans le nom du dossier de profil restauré, le nom du dossier n'est pas localisé.
 
-Version 1.1.0.0 -02/06/2019 
+Version 1.1.0.0 -05/06/2019 
 Réécriture du programme en Free Pascal, EDI Lazarus : versions Windows 64 et 32 bits et Linux
 Prise en compte de la nouvelle structure de profils de Mozilla
 Préservation du profil avant une restauration totale
-Utilisation des routines de compression/décompression Abbrevia de Turbo Power Software
-(Mozilla Public Licese 1.1)
 
+Version 1.1.0.1 - 06/06/2019
+Adaptation de l'impression du journal aux caractéristiques de l'imprimante
 
 
 

@@ -75,6 +75,8 @@ Correction du bug qui ne sauvegardait pas les sous-répertoires
 
 Version 1.0.0.7 - 25/12/2016
 Désctivation du bouton "Fermer" et du changement d'onglet pendant la création et la restauration d'une sauvegarde
+Détection de Windows 32 ou 64 bits
+
 
 Version 1.0.0.8 - 05/03/2017
 Pour éviter toute erreur dans le nom du dossier de profil restauré, le nom du dossier n'est pas localisé.
@@ -83,6 +85,10 @@ Version 1.1.0.0 -05/06/2019
 Réécriture du programme en Free Pascal, EDI Lazarus : versions Windows 64 et 32 bits et Linux
 Prise en compte de la nouvelle structure de profils de Mozilla
 Préservation du profil avant une restauration totale
+
+Version 1.1.0.1 - 06/06/2019
+Adaptation de l'impression du journal aux caractéristiques de l'imprimante
+
 
 
 

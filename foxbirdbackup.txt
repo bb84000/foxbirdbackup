@@ -1,5 +1,5 @@
 ﻿Firefox and Thunderbird Profile Backup
-FoxBirdBackup Version 1.1.0.0
+FoxBirdBackup Version 1.1.0.1
 
 (Explication en Français à la fin de ce fichier)
 
@@ -35,7 +35,7 @@ Mozilla, Firefox names and logos are property of Mozilla Foundation.
 
 Sauvegarde de profil Firefox  et Thunderbird
 
-FoxBirdBackup Version 1.0.0.8
+FoxBirdBackup Version 1.1.0.1
 
 OBJET
 Sauvegarde et restaure les profils
