@@ -77,7 +77,6 @@ Version 1.0.0.7 - 25/12/2016
 Désctivation du bouton "Fermer" et du changement d'onglet pendant la création et la restauration d'une sauvegarde
 Détection de Windows 32 ou 64 bits
 
-
 Version 1.0.0.8 - 05/03/2017
 Pour éviter toute erreur dans le nom du dossier de profil restauré, le nom du dossier n'est pas localisé.
 
@@ -89,9 +88,8 @@ Préservation du profil avant une restauration totale
 Version 1.1.0.1 - 06/06/2019
 Adaptation de l'impression du journal aux caractéristiques de l'imprimante
 
-
-
-
+Version 1.1.0.2 - 07/06/2019
+Indication de la version du système d'exploitation et de l'arhitecture de la machine
 
 
 

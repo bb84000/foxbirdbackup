@@ -15,7 +15,6 @@ type
   TFLogView = class(TForm)
     BtnQuit: TButton;
     BtnPrint: TButton;
-    Label1: TLabel;
     LSelLines: TLabel;
     ListBox1: TListBox;
     Panel1: TPanel;
@@ -64,7 +63,6 @@ begin
     scaleFactor:=Printer.YDPI / Screen.PixelsPerInch;
     txtheight:= Printer.Canvas.TextHeight('Text Height');
     FlogView.Canvas.Font.Size := 8;
-    Label1.Caption:= INtToStr(FlogView.Canvas.TextHeight('Text Height'));
     txtheight:= trunc(txtheight*scalefactor);
     TMargin:= Printer.YDPI div 3; // 1/3 inch
     LMargin:= Printer.XDPI div 3; // 1/3 inch

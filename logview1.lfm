@@ -37,15 +37,6 @@ object FLogView: TFLogView
       OnClick = BtnPrintClick
       TabOrder = 1
     end
-    object Label1: TLabel
-      Left = 16
-      Height = 15
-      Top = 10
-      Width = 202
-      AutoSize = False
-      Caption = 'Label1'
-      ParentColor = False
-    end
   end
   object ListBox1: TListBox
     Left = 0
@@ -72,7 +63,7 @@ object FLogView: TFLogView
       Left = 16
       Height = 15
       Top = 8
-      Width = 752
+      Width = 950
       AutoSize = False
       Caption = 'Sélectionnez les lignes que vous voulez impimer, à défaut tout le journal sera imprimé !'
       ParentColor = False

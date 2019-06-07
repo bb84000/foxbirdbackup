@@ -32,7 +32,7 @@ uses
      Win32Proc,
   {$ENDIF} Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, Buttons, Menus, inifiles, FileUtil, lazfileutils,
-  strutils, lazbbutils, LazUTF8, zipper,
+  strutils, lazbbutils, LazUTF8, zipper, lazbbosversion,
   logview1;
 
 type
@@ -90,7 +90,6 @@ type
     ERestPath: TEdit;
     GroupBox1: TGroupBox;
     ImgBack: TImage;
-    Label1: TLabel;
     LLastBkDate: TLabel;
     LBackFolder: TLabel;
     LBackName: TLabel;
@@ -135,6 +134,7 @@ type
   private
     first: Boolean;
     OS: String;
+    OsInfo: TOSInfo;
     CRLF: String;
     CompileDateTime: TDateTime;
     version: string;
@@ -170,7 +170,6 @@ type
     import_filter: string;
     restore_path_caption, export_path_caption, backup_name_to_import : string;
     progres : Integer;
-    wxbitsrun: Integer;
     procedure ModLangue;
     function ListProfiles(app: TMozApp): boolean;
     function ListBackups(app: TMozApp): boolean;
@@ -207,7 +206,7 @@ procedure TFoxBirdBack.FormCreate(Sender: TObject);
 var
   s: string;
   langfound: Boolean;
-  i: integer;
+  i, x: integer;
 begin
   inherited;
  // Application.CreateForm(TFLogView, FLogView);      //we need this as we use it to store log messages
@@ -226,6 +225,7 @@ begin
      x:= pos('.', LangStr);
      LangStr:= Copy(LangStr,0, 2);
      wxbitsrun:= 0;
+     GetSysInfo(OsInfo);
   {$ENDIF}
   {$IFDEF WINDOWS}
      OS:= 'Windows ';
@@ -237,7 +237,7 @@ begin
      ffpath:= UserAppsDataPath+'Mozilla'+PathDelim+'Firefox'+PathDelim; //Profiles\<profile folder>
      tbpath:= UserAppsDataPath+'Thunderbird'+PathDelim;
      LazGetShortLanguageID(LangStr);
-     If DirectoryExists('C:\Windows\SysWOW64') then wxbitsrun:= 64 else wxbitsrun:= 32;
+     GetSysInfo(OsInfo);
   {$ENDIF}
   {$IFDEF WIN32}
       OSTarget:= '32 bits';
@@ -251,6 +251,7 @@ begin
   except
     CompileDateTime:=  now();
   end;
+  version:= GetVersionInfo.ProductVersion;
    AppdataPath:= UserAppsDataPath+'foxbirdbackup'+PathDelim;
    if not DirectoryExists(AppdataPath) then CreateDir(AppdataPath);
    if FileExists(AppdataPath+'log.txt') then
@@ -259,7 +260,8 @@ begin
      if FileExists(AppdataPath+'log.bak') then DeleteFile(AppdataPath+'log.bak');
      RenameFile(AppdataPath+'log.txt', AppdataPath+'log.bak');
    end;
-   LogSession.Add(DateTimeToStr(now)+' - Open FoxbirdBackup');
+   LogSession.Add(DateTimeToStr(now)+' - Open FoxbirdBackup '+Version+' '+OSTarget);
+   LogSession.Add(DateTimeToStr(now)+' - '+OsInfo.VerDetail);
    LogSession.add(DateTimeToStr(now)+' - FF path: '+ffpath);
    LogSession.add(DateTimeToStr(now)+' - TB path: '+tbpath);
    FireBack:= AppdataPath+'fireback'+PathDelim;
@@ -297,15 +299,15 @@ end;
 // Activation de la forme
 
 procedure TFoxBirdBack.FormActivate(Sender: TObject);
-var
-  s: string;
+//var
+  //s: string;
 begin
    // On n'exécute ça qu'une fois, au lancement, c'est Firefox qui est sélectionné par défaut
    if first then
   begin
     AppToBack:= 'Firefox';
     ImgBack.Picture.Icon.LoadFromResourceName(HInstance, 'iffox');
-    version:= GetVersionInfo.ProductVersion;
+
     UpdateUrl:= 'http://www.sdtp.com/versions/version.php?program=foxbirdbackup&version=';
     ModLangue;
     Caption:= Format(caption_prefix, [AppToBack]);
@@ -319,8 +321,7 @@ begin
     //AboutBox.LUpdate.Caption:= 'Recherche de mise à jour';      // in Modlangue
     AboutBox.UrlWebsite:=GetVersionInfo.Comments;
     PageControl1.ActivePage:= TSBackup;
-    if wxbitsrun > 0 then s:= ' '+IntToStr(wxbitsrun)+' bits' else s:= '';
-    PStatus.Caption:= ' '+OS+s;
+    PStatus.Caption:= ' '+OsInfo.VerDetail;
     EProfilePath.Text:= ffpath;
     EBackfolder.Text:= FireBack;
     ProfileType:= ff;
@@ -347,6 +348,7 @@ end;
 
 function TFoxBirdBack.ListProfiles(app: TMozApp): boolean;
 var
+ // InstallIni: TIniFile;
   ProfileIni: TInifile;
   i: integer;
   apppath: string;
@@ -359,12 +361,14 @@ begin
   if FileExists(apppath+'profiles.ini') then
   begin
     result:= false;
+
     ProfileIni:= TInifile.Create(apppath+'profiles.ini');
     //UTF8Length
     StartWithLastProfile:= ProfileIni.ReadInteger('General','StartWithLastProfile', 1);
     ProfileVersion:= ProfileIni.ReadInteger('General','Version', 1);
     // Enumerate sections
     Sections:= TStringList.Create;
+    ProfileIni.CaseSensitive:= False;   // To be replaced by options but don't work
     ProfileIni.ReadSections(Sections);
     ProfilesCount:= 0;
     CurrentProfile:= 0;
@@ -375,7 +379,7 @@ begin
       for i:= 0 to Sections.Count-1 do
       begin
         ssect:= Sections[i];
-        if copy(ssect, 0, 7)='Install' then
+        if UpperCase(copy(ssect, 0, 7))='INSTALL' then
         begin
           sdefpath:= ProfileIni.ReadString (ssect, 'Default', '');
           ProfileVersion:= 2;
@@ -1141,6 +1145,11 @@ begin
     // Selection du profil
     RestProfSel.Caption:= ReadString(LangStr, 'RestProfSel.Caption', RestProfSel.Caption);
     RestProfSel.BtnCancel.Caption:= btn_cancel_caption;
+    // Fenêtre log
+    FLogView.Caption:= ReadString(LangStr, 'FLogView.Caption', FLogView.Caption);
+    FLogView.LSelLines.Caption:= ReadString( LangStr, 'FLogView.LSelLines.Caption', FLogView.LSelLines.Caption);
+    FLogView.BtnQuit.Caption:= BtnQuit.Caption;
+    FLogView.BtnPrint.Caption:= ReadString( LangStr, 'FLogView.BtnPrint.Caption', FLogView.BtnPrint.Caption);
   end;
 end;
 

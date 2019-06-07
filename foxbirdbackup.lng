@@ -69,6 +69,10 @@ CBExt.Caption=Addons
 CBUserPref.Caption=User preferences
 CBAddress.Caption=Address book
 RestProfSel.Caption=Select profil to restore
+; LogView
+FLogView.Caption=FoxBirdBackup log
+FLogView.LSelLines.Caption=Select the lines you want printed, instead, all the log will be printed !
+FLogView.BtnPrint.Caption=Print
 
 ;Français
 [fr]
@@ -131,4 +135,8 @@ CBUserPref.Caption=Préférences utilisateur
 CBAddress.Caption=Carnet d'adresses
 ; profile selection
 RestProfSel.Caption=Sélection du profil à restaurer
+;Logview
+FLogView.Caption=Journal de FoxbirdBackup
+FLogView.LSelLines.Caption=Sélectionnez les lignes que vous voulez impimer, à défaut tout le journal sera imprimé !
+FLogView.BtnPrint.Caption=Imprimer;
 

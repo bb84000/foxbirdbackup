@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, printer4lazarus, abbrevia, FoxBirdBackup1, lazbbutils, restprofsel1,
-  logview1
+  Forms, printer4lazarus, FoxBirdBackup1, lazbbutils, restprofsel1,
+  logview1, lazbbosversion
   { you can add units after this };
 
 {$R *.res}

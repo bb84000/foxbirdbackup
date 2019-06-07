@@ -127,15 +127,6 @@ object FoxBirdBack: TFoxBirdBack
         Width = 129
         TabOrder = 5
       end
-      object Label1: TLabel
-        Left = 218
-        Height = 15
-        Top = 184
-        Width = 262
-        AutoSize = False
-        Caption = 'Label1'
-        ParentColor = False
-      end
     end
     object TSRestore: TTabSheet
       Caption = 'Gestion et restauration de sauvegarde'
