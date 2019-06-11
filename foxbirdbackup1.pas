@@ -31,8 +31,8 @@ uses
   {$IFDEF WINDOWS}
      Win32Proc,
   {$ENDIF} Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls, Buttons, Menus, inifiles, FileUtil, lazfileutils,
-  strutils, lazbbutils, LazUTF8, zipper, lazbbosversion,
+  ExtCtrls, StdCtrls, Buttons, Menus, FileUtil, lazfileutils,
+  strutils, lazbbutils, LazUTF8, zipper, lazbbosversion, lazbbinifiles,
   logview1;
 
 type
@@ -140,7 +140,7 @@ type
     version: string;
     OSTarget: String;
     UpdateURL: string;
-    LangFile: TIniFile;
+    LangFile: TBbIniFile;
     LangStr: string;
     LangIds: TStringList;
     AppToBack: String;
@@ -271,7 +271,7 @@ begin
    LogSession.add(DateTimeToStr(now)+' - FF backup path: '+FireBack);
    LogSession.add(DateTimeToStr(now)+' - TB backup path: '+ThunderBack);
    LogSession.add(DateTimeToStr(now)+' - UI Language: '+LangStr);
-   LangFile:= TIniFile.create(TrimFileExt(Application.ExeName)+'.lng');
+   LangFile:= TBbIniFile.create(ExtractFilePath(Application.ExeName)+'foxbirdbackup.lng');
    LangIds:= TStringList.Create;
    LangFound:= False;
    LangFile.ReadSections(LangIds);
@@ -349,7 +349,7 @@ end;
 function TFoxBirdBack.ListProfiles(app: TMozApp): boolean;
 var
  // InstallIni: TIniFile;
-  ProfileIni: TInifile;
+  ProfileIni: TBbInifile;
   i: integer;
   apppath: string;
   ssect, sdefpath, spath, sname: string;
@@ -361,9 +361,8 @@ begin
   if FileExists(apppath+'profiles.ini') then
   begin
     result:= false;
-
-    ProfileIni:= TInifile.Create(apppath+'profiles.ini');
-    //UTF8Length
+    // detect if it is an unicode 16 with BOM
+    ProfileIni:= TBbInifile.Create(apppath+'profiles.ini');
     StartWithLastProfile:= ProfileIni.ReadInteger('General','StartWithLastProfile', 1);
     ProfileVersion:= ProfileIni.ReadInteger('General','Version', 1);
     // Enumerate sections
@@ -372,6 +371,7 @@ begin
     ProfileIni.ReadSections(Sections);
     ProfilesCount:= 0;
     CurrentProfile:= 0;
+
     if Sections.Count > 0 then
     begin
       LogSession.add(DateTimeToStr(now)+' - '+AppToBack+' profiles list:');
@@ -663,7 +663,7 @@ var
   lockedfile: string;
   zipname: string;
   apppath: string;
-  ProfileIni: TInifile;
+  ProfileIni: TBbInifile;
   Relativepath: String;
   x: integer;
   UZip2Imp: TUnzipper;
@@ -743,7 +743,7 @@ begin
                   if RenameFile(ERestPath.Text, ChompPathDelim(ERestPath.Text)+'_bk'+PathDelim) then
                   begin
                     UnZipFiles(Backups[LBR.ItemIndex].FileName, ERestPath.Text, all);
-                    ProfileIni:= TInifile.Create(apppath+'profiles.ini');
+                    ProfileIni:= TBbInifile.Create(apppath+'profiles.ini');
                     ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'Name', Profiles[RestProfSel.LBS.ItemIndex].Name+'_bk');
                     ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'IsRelative', '1');
                     x:= Pos('rofiles', ChompPathDelim(ERestPath.Text)+'_bk');
