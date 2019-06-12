@@ -11,7 +11,7 @@
         <UnitName Value="FoxBirdBackup"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="11" Y="11"/>
-        <UsageCount Value="146"/>
+        <UsageCount Value="154"/>
       </Unit0>
       <Unit1>
         <Filename Value="foxbirdbackup1.pas"/>
@@ -20,11 +20,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FoxBirdBackup1"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="727"/>
-        <CursorPos X="73" Y="738"/>
-        <UsageCount Value="146"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="1156"/>
+        <CursorPos Y="1193"/>
+        <UsageCount Value="154"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="restprofsel1.pas"/>
@@ -34,15 +35,16 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="14" Y="25"/>
-        <UsageCount Value="74"/>
+        <UsageCount Value="82"/>
       </Unit2>
       <Unit3>
         <Filename Value="foxbirdbackup.txt"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2"/>
-        <CursorPos X="113" Y="25"/>
-        <UsageCount Value="57"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="37"/>
+        <CursorPos X="30" Y="38"/>
+        <UsageCount Value="65"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit3>
       <Unit4>
@@ -50,21 +52,21 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="35" Y="501"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="37"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\lazbbunits\lazbbinifiles.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="20"/>
-        <CursorPos X="110" Y="153"/>
-        <UsageCount Value="22"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="45"/>
+        <CursorPos X="4" Y="65"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="foxBirdBackup.lng.txt"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="73"/>
+        <UsageCount Value="72"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit6>
       <Unit7>
@@ -73,7 +75,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="19"/>
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit7>
       <Unit8>
@@ -83,7 +85,7 @@
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="25" Y="22"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="32"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\bbunits\lazbbutils1.pas"/>
@@ -93,13 +95,13 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="2"/>
         <CursorPos X="3" Y="21"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="19"/>
       </Unit9>
       <Unit10>
         <Filename Value="foxbirdicons.rc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="35" Y="2"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit10>
       <Unit11>
@@ -108,26 +110,26 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="117"/>
         <CursorPos X="3" Y="170"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="11"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\filutilh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="71"/>
         <CursorPos X="59" Y="154"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit12>
       <Unit13>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\inc\ustringh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="20" Y="137"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="21"/>
       </Unit13>
       <Unit14>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\finah.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="32"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="24"/>
       </Unit14>
       <Unit15>
         <Filename Value="C:\lazarus\components\lazutils\fileutil.pas"/>
@@ -135,34 +137,34 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="152"/>
         <CursorPos X="23" Y="169"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit15>
       <Unit16>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\paszlib\src\zipper.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="329"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="30"/>
       </Unit16>
       <Unit17>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2"/>
         <CursorPos X="3" Y="22"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="24"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\sysinth.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="17"/>
         <CursorPos X="3" Y="33"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="16"/>
       </Unit18>
       <Unit19>
         <Filename Value="..\bbunits\about1.pas"/>
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="18"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\bbunits\lazbbutils.pas"/>
@@ -172,28 +174,29 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="38"/>
         <CursorPos X="21" Y="69"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="37"/>
       </Unit20>
       <Unit21>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\fcl-base\src\fileinfo.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="8"/>
         <CursorPos X="3" Y="28"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="24"/>
       </Unit21>
       <Unit22>
         <Filename Value="C:\lazarus\components\lazutils\lazfileutils.pas"/>
         <UnitName Value="LazFileUtils"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="18" Y="87"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="18"/>
       </Unit22>
       <Unit23>
         <Filename Value="foxbirdbackup.lng"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="102"/>
-        <CursorPos Y="142"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="66"/>
+        <CursorPos X="33" Y="96"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit23>
       <Unit24>
@@ -202,7 +205,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="183"/>
         <CursorPos X="11" Y="203"/>
-        <UsageCount Value="18"/>
+        <UsageCount Value="17"/>
       </Unit24>
       <Unit25>
         <Filename Value="C:\lazarus\lcl\forms.pp"/>
@@ -210,14 +213,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1488"/>
         <CursorPos X="15" Y="1506"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="14"/>
       </Unit25>
       <Unit26>
         <Filename Value="History.txt"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="64"/>
-        <CursorPos X="87" Y="74"/>
-        <UsageCount Value="17"/>
+        <CursorPos X="43" Y="65"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit26>
@@ -225,21 +228,21 @@
         <Filename Value="license.txt"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="35" Y="9"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit27>
       <Unit28>
         <Filename Value="licensf.txt"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="48" Y="8"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\..\..\AppData\Local\lazarus\onlinepackagemanager\packages\Abbrevia\source\AbZipper.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="21" Y="2"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="11"/>
       </Unit29>
       <Unit30>
         <Filename Value="C:\lazarus\components\printers\osprinters.pas"/>
@@ -247,19 +250,19 @@
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="67"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit30>
       <Unit31>
         <Filename Value="C:\lazarus\components\printers\samples\dialogs\frmselprinter.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit31>
       <Unit32>
         <Filename Value="C:\lazarus\lcl\interfaces\cocoa\cocoa_extra.pas"/>
         <UnitName Value="Cocoa_Extra"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="2" Y="18"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit32>
       <Unit33>
         <Filename Value="C:\lazarus\components\printers\printersdlgs.pp"/>
@@ -267,7 +270,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="106"/>
         <CursorPos X="32" Y="114"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit33>
       <Unit34>
         <Filename Value="C:\lazarus\lcl\dialogs.pp"/>
@@ -275,19 +278,20 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="97"/>
         <CursorPos X="3" Y="86"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit34>
       <Unit35>
         <Filename Value="..\lazbbunits\lazbbutils.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="31"/>
-        <CursorPos X="3" Y="18"/>
-        <UsageCount Value="15"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="189"/>
+        <CursorPos X="10" Y="215"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
       </Unit35>
       <Unit36>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\paszlib\src\paszlib.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit36>
       <Unit37>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\fcl-base\src\inifiles.pp"/>
@@ -295,74 +299,130 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="829"/>
         <CursorPos X="88" Y="841"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit37>
     </Units>
-    <JumpHistory Count="16" HistoryIndex="15">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="34" Column="39" TopLine="20"/>
+        <Caret Line="1196" Column="21" TopLine="1165"/>
       </Position1>
       <Position2>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="143" Column="25" TopLine="123"/>
+        <Caret Line="167" Column="118" TopLine="157"/>
       </Position2>
       <Position3>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="274" Column="25" TopLine="254"/>
+        <Caret Line="331" Column="22" TopLine="298"/>
       </Position3>
       <Position4>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="352" Column="25" TopLine="332"/>
+        <Caret Line="394" Column="54" TopLine="361"/>
       </Position4>
       <Position5>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="365" Column="28" TopLine="345"/>
+        <Caret Line="438" Column="58" TopLine="406"/>
       </Position5>
       <Position6>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="666" Column="18" TopLine="646"/>
+        <Caret Line="449" Column="54" TopLine="417"/>
       </Position6>
       <Position7>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="4" Column="115"/>
+        <Caret Line="549" Column="49" TopLine="514"/>
       </Position7>
       <Position8>
-        <Filename Value="..\lazbbunits\lazbbinifiles.pas"/>
-        <Caret Line="84" Column="6" TopLine="69"/>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="551" Column="54" TopLine="519"/>
       </Position8>
       <Position9>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="274" Column="67" TopLine="237"/>
+        <Caret Line="573" Column="46" TopLine="540"/>
       </Position9>
       <Position10>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="6" Column="56"/>
+        <Caret Line="583" Column="40" TopLine="579"/>
       </Position10>
       <Position11>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="143" Column="18" TopLine="111"/>
+        <Caret Line="593" Column="70" TopLine="583"/>
       </Position11>
       <Position12>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="275" Column="18" TopLine="255"/>
+        <Caret Line="615" Column="57" TopLine="582"/>
       </Position12>
       <Position13>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="352" Column="25" TopLine="319"/>
+        <Caret Line="602" Column="32" TopLine="583"/>
       </Position13>
       <Position14>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="667" Column="18" TopLine="696"/>
+        <Caret Line="695" Column="24" TopLine="662"/>
       </Position14>
       <Position15>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="747" Column="37" TopLine="735"/>
+        <Caret Line="732" Column="62" TopLine="696"/>
       </Position15>
       <Position16>
         <Filename Value="foxbirdbackup1.pas"/>
-        <Caret Line="274" Column="68" TopLine="252"/>
+        <Caret Line="737" Column="36" TopLine="705"/>
       </Position16>
+      <Position17>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="775" Column="40" TopLine="739"/>
+      </Position17>
+      <Position18>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="785" Column="70" TopLine="753"/>
+      </Position18>
+      <Position19>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="781" Column="55" TopLine="757"/>
+      </Position19>
+      <Position20>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="815" Column="63" TopLine="783"/>
+      </Position20>
+      <Position21>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="819" Column="36" TopLine="787"/>
+      </Position21>
+      <Position22>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="869" Column="25" TopLine="836"/>
+      </Position22>
+      <Position23>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="890" Column="25" TopLine="858"/>
+      </Position23>
+      <Position24>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="999" Column="56" TopLine="967"/>
+      </Position24>
+      <Position25>
+        <Filename Value="foxbirdbackup1.pas"/>
+        <Caret Line="1039" Column="20" TopLine="1006"/>
+      </Position25>
+      <Position26>
+        <Filename Value="foxbirdbackup.txt"/>
+        <Caret Line="38" Column="30" TopLine="37"/>
+      </Position26>
+      <Position27>
+        <Filename Value="..\lazbbunits\lazbbinifiles.pas"/>
+        <Caret Line="110" Column="3" TopLine="90"/>
+      </Position27>
+      <Position28>
+        <Filename Value="..\lazbbunits\lazbbinifiles.pas"/>
+        <Caret Line="66" Column="3" TopLine="46"/>
+      </Position28>
+      <Position29>
+        <Filename Value="..\lazbbunits\lazbbinifiles.pas"/>
+        <Caret Line="110" TopLine="90"/>
+      </Position29>
+      <Position30>
+        <Filename Value="..\lazbbunits\lazbbinifiles.pas"/>
+        <Caret Line="66" TopLine="46"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

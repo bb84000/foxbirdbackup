@@ -94,6 +94,11 @@ Indication de la version du système d'exploitation et de l'arhitecture de la ma
 Version 1.1.0.3 - 11/06/2019
 Les fichiers ini Unicode sont supportés
 
+Version 1.1.0.4 - 12/06/2019
+Traduction des messages du journal
+Sécurisation de la routine de formatage de texte
+Détection du jeu de caractères des fichiers ini et traitement en conséquence
+
 
 
 
