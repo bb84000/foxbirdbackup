@@ -44,6 +44,7 @@ type
     IsRelative : Boolean;
     Path : string;
     Default : Boolean;
+    Current: Boolean;
     PType: TMozApp;
   end;
 
@@ -178,10 +179,13 @@ type
     logdelbackup, logcannotdelbk, logimportbk, logcannotimpbk: string ;
     logoldprofsaved, logcannotrestprof: string;
     logexportbk, logfullrested, logpartrested, logcreatedbk: string;
+    logprofdel, logcannotdelprof, logprofren, logcannotrenprof: string;
+    procedure ModLangStrings;
     procedure ModLangue;
     function ListProfiles(app: TMozApp): boolean;
     function ListBackups(app: TMozApp): boolean;
-    procedure SortArray(var Backs: TBackups; stype : TSortType);
+    procedure SortBacks(var Backs: TBackups; stype : TSortType);
+    procedure SortProfs(var Profs: TProfiles; stype: TSortType);
     function EnableControls(state: boolean): boolean;
     function ZipAFolder(Folder, ZipName: string): boolean;
     function EnableRestItems(state: boolean): boolean;
@@ -189,7 +193,8 @@ type
     procedure OnArchiveProgress(Sender: TObject; Progress: Byte; var Abort: Boolean);
     Procedure ZipperProgress(Sender : TObject; Const Pct : Double) ;
     Procedure ZipperEndFile(Sender : TObject; Const Ratio : Double) ;
-
+    function DetFreeProfileNum : integer;
+    function DelRenBackup(num: integer; apppath: string): Boolean;
   public
 
   end;
@@ -290,18 +295,19 @@ begin
   begin
     LangStr:= 'en';
   end;
-  logopenfbb:= LangFile.ReadString( LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
+  ModLangStrings;
+  //logopenfbb:= LangFile.ReadString( LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
   LogSession.Add(DateTimeToStr(now)+' - '+FormatS(logopenfbb, [Version, OSTarget]));
   LogSession.Add(DateTimeToStr(now)+' - '+OsInfo.VerDetail);
-  logfftbpath:= LangFile.ReadString( LangStr, 'logfftbpath', 'Chemin de %s: %s');
+  //logfftbpath:= LangFile.ReadString( LangStr, 'logfftbpath', 'Chemin de %s: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['FF', ffpath]));
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['TB', tbpath]));
-  logfftbbkpath:= LangFile.ReadString( LangStr, 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
+  //logfftbbkpath:= LangFile.ReadString( LangStr, 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbbkpath, ['FF', FireBack]));
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbbkpath, ['TB', ThunderBack]));
-  loguilang:= LangFile.ReadString( LangStr, 'loguilang', 'Langue de l''OS: %s');
+  //loguilang:= LangFile.ReadString( LangStr, 'loguilang', 'Langue de l''OS: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(loguilang, [uilang]));
-  loguserlang:= LangFile.ReadString(loguserlang, 'loguserlang', 'Langue de l''utilisateur: %s');
+  //loguserlang:= LangFile.ReadString(loguserlang, 'loguserlang', 'Langue de l''utilisateur: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(loguserlang, [LangStr]));
 
 end;
@@ -418,10 +424,10 @@ begin
           Profiles[ProfilesCount-1].Number:= StrToInt(copy(ssect,8,2));   // Is it useful ?
           sname:= IsAnsi2Utf8(ProfileIni.ReadString (ssect, 'Name', ''));
           Profiles[ProfilesCount-1].Name:= sname;
-          LBS.Items.Add(sname);
+          //LBS.Items.Add(sname);
           spath:= IsAnsi2Utf8(ProfileIni.ReadString (ssect, 'Path', ''));
           // New profiles.ini version
-          if (ProfileVersion=2) and (sdefpath=spath) then CurrentProfile:= ProfilesCount-1 ;
+          if (ProfileVersion=2) and (sdefpath=spath) then Profiles[ProfilesCount-1].Current:= true;//CurrentProfile:= ProfilesCount-1 ;
           spath:= StringReplace(spath, '/', PathDelim, [rfReplaceAll]);
           Profiles[ProfilesCount-1].IsRelative:= Boolean(ProfileIni.ReadInteger(ssect, 'IsRelative', 0));
           if Profiles[ProfilesCount-1].IsRelative then
@@ -438,26 +444,31 @@ begin
           LogSession.add(DateTimeToStr(now)+' - '+FormatS(logprofile, [AppToBack, Profiles[ProfilesCount-1].Name,
                          Profiles[ProfilesCount-1].Path]));
           // Old profiles.ini version
-          if (ProfileVersion=1) and (Profiles[ProfilesCount-1].Default) then CurrentProfile:= ProfilesCount-1 ;
+          if (ProfileVersion=1) and (Profiles[ProfilesCount-1].Default) then Profiles[ProfilesCount-1].Current:= true; //CurrentProfile:= ProfilesCount-1 ;
         end;
       end;
     end;
     Sections.Free;
     ProfileIni.free;
-        If ProfilesCount > 0 then
+    If ProfilesCount > 0 then
     begin
-      LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcurprofile, [AppToBack, Profiles[CurrentProfile].Name]));
+      SortProfs(Profiles, up);
+      For i:= 0 to ProfilesCount-1 do
+      begin
+        LBS.Items.Add(Profiles[i].Name);
+        if Profiles[i].Current then CurrentProfile:= i;
+      end;
+     LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcurprofile, [AppToBack, Profiles[CurrentProfile].Name]));
       LBS.ItemIndex:= CurrentProfile;
       Result:= True;
     end;
   end;
   LBClick (LBS);
-
 end;
 
 // tri d'un array de records sur champ numérique
 
-procedure TFoxBirdBack.SortArray(var Backs: TBackups;  stype : TSortType);
+procedure TFoxBirdBack.SortBacks(var Backs: TBackups;  stype : TSortType);
   var
     i: Integer;
     temp: TBackup;
@@ -483,6 +494,34 @@ procedure TFoxBirdBack.SortArray(var Backs: TBackups;  stype : TSortType);
       end;
     end;
 end;
+
+procedure TFoxBirdBack.SortProfs(var Profs: TProfiles; stype: TSortType);
+var
+  i: Integer;
+  temp: TProfile;
+  chnged: Boolean;
+  sorting: boolean;
+begin
+  chnged := True;
+  while chnged do
+  begin
+    chnged := False;
+    for i := Low(Profs) to High(Profs)-1 do
+    begin
+      // sort ascending or descending
+      if stype= up then sorting:= (Profs[i].Number > Profs[i+1].Number)
+      else sorting:= (Profs[i].Number < Profs[i+1].Number);
+        if  sorting then
+        begin
+          temp := Profs[i+1];
+          Profs[i+1] := Profs[i];
+          Profs[i] := temp;
+          chnged := True;
+        end;
+      end;
+    end;
+end;
+
 
 // Enumeration des sauvegardes
 
@@ -544,7 +583,7 @@ begin
   if BackupsCount > 0 then
   begin
     LogSession.add(DateTimeToStr(now)+' - '+FormatS(logbklist, [AppToBack]));
-    SortArray(Backups, up);
+    SortBacks(Backups, up);
     For i:=0 to BackupsCount-1 do
     begin
       LBR.Items.Add(Backups[i].Profile.Name+' : ' +DateTimeToStr(Backups[i].Date));
@@ -675,6 +714,21 @@ begin
   ProgressBar1.Position:= 0;
 end;
 
+// Detect the first free profile nhumber
+function TFoxBirdBack.DetFreeProfileNum : integer;
+var
+  i: integer;
+begin
+  result:= length(Profiles);
+  For i:= 0 to length(Profiles)-1 do
+  begin
+    if Profiles[i].Number <> i then
+    begin
+      result:= i;
+      break;
+    end;
+  end;
+end;
 
 procedure TFoxBirdBack.BtnBackClick(Sender: TObject);
 var
@@ -683,7 +737,7 @@ var
   apppath: string;
   ProfileIni: TBbInifile;
   Relativepath: String;
-  x: integer;
+  j, x: integer;
   UZip2Imp: TUnzipper;
   Comment: TStringList;
   bktype: string;
@@ -755,45 +809,30 @@ begin
               // Sauvegarde complète : on renomme le dossier du profil courant et on le recrée avec la sauvegarde
               if RBComplete.Checked then
               begin
-                If not DirectoryExists(ChompPathDelim(ERestPath.Text)+'_bk') then
+                // delete or rename previous backups
+                if not DelRenBackup(4, apppath) then exit;
+                For j:= 3 downto 0 do
                 begin
-                  if RenameFile(ERestPath.Text, ChompPathDelim(ERestPath.Text)+'_bk'+PathDelim) then
-                  begin
-                    UnZipFiles(Backups[LBR.ItemIndex].FileName, ERestPath.Text, all);
-                    ProfileIni:= TBbInifile.Create(apppath+'profiles.ini');
-                    ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'Name', Profiles[RestProfSel.LBS.ItemIndex].Name+'_bk');
-                    ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'IsRelative', '1');
-                    x:= Pos('rofiles', ChompPathDelim(ERestPath.Text)+'_bk');
-                    Relativepath:= Copy(ChompPathDelim(ERestPath.Text)+'_bk', x-1, length(ChompPathDelim(ERestPath.Text)));
-                    RelativePath:= StringReplace(RelativePath, '\', '/', [rfReplaceAll]);
-                    ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'Path', RelativePath);
-                    ProfileIni.free;
-                    LogSession.add(DateTimeToStr(now)+' - '+FormatS(logoldprofsaved, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
-                    ListProfiles(ProfileType);
-                  end else
-                  begin
-                    ShowMessage(FormatS(cannot_restore_profile_locked, [CRLF]));
-                    LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcannotrestprof, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
-                   end;
+                  if not DelRenBackup(j, apppath) then exit;
+                end;
+                // now restore
+                if RenameFile(ERestPath.Text, ChompPathDelim(ERestPath.Text)+'_bk0'+PathDelim) then
+                begin
+                  UnZipFiles(Backups[LBR.ItemIndex].FileName, ERestPath.Text, all);
+                  ProfileIni:= TBbInifile.Create(apppath+'profiles.ini');
+                  ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'Name', Profiles[RestProfSel.LBS.ItemIndex].Name+'_bk0');
+                  ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'IsRelative', '1');
+                  x:= Pos('rofiles', ChompPathDelim(ERestPath.Text)+'_bk0');
+                  Relativepath:= Copy(ChompPathDelim(ERestPath.Text)+'_bk0', x-1, length(ChompPathDelim(ERestPath.Text)));
+                  RelativePath:= StringReplace(RelativePath, '\', '/', [rfReplaceAll]);
+                  ProfileIni.WriteString ('Profile'+IntToStr(length(Profiles)), 'Path', RelativePath);
+                  ProfileIni.free;
+                  LogSession.add(DateTimeToStr(now)+' - '+FormatS(logoldprofsaved, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
+                  ListProfiles(ProfileType);
                 end else
                 begin
-                  if DeleteDirectory(ChompPathDelim(ERestPath.Text)+'_bk', false) then
-                  begin
-                    if RenameFile(ERestPath.Text, ChompPathDelim(ERestPath.Text)+'_bk'+PathDelim) then
-                    begin
-                      UnZipFiles(Backups[LBR.ItemIndex].FileName, ERestPath.Text, all);
-                      LogSession.add(DateTimeToStr(now)+' - '+FormatS(logoldprofsaved, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
-                      ListProfiles(ProfileType);
-                    end else
-                    begin
-                      ShowMessage(FormatS(cannot_restore_profile_locked, [CRLF]));
-                      LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcannotrestprof, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
-                    end;
-                  end else
-                  begin
-                    ShowMessage(FormatS(cannot_restore_profile_locked, [CRLF]));
-                    LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcannotrestprof, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
-;                 end;
+                  ShowMessage(FormatS(cannot_restore_profile_locked, [CRLF]));
+                  LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcannotrestprof, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
                 end;
               end;
               // Sauvegarde partielle
@@ -825,6 +864,56 @@ begin
       end;
   end;
   EnableControls(True);
+end;
+
+function TFoxBirdBack.DelRenBackup(num: integer; apppath: string): Boolean;
+var
+  i, x : integer;
+  ProfileIni: TBbInifile;
+  freeprofnum: integer;
+  relativepath: string;
+begin
+  Result:= true;
+  ProfileIni:= TBbInifile.Create(apppath+'profiles.ini');
+  For i:= 0 to length(profiles)-1 do
+  begin
+    if Profiles[i].Path = ChompPathDelim(ERestPath.Text)+'_bk'+inttostr(num)+PathDelim then
+    begin
+      if Profiles[i].Current then
+      begin
+        ShowMessage(FormatS(cannot_restore_profile_locked, [CRLF]));
+        LogSession.add(DateTimeToStr(now)+' - '+FormatS(logcannotrestprof, [Profiles[RestProfSel.LBS.ItemIndex].Name]));
+        Result:= false;
+        exit;
+      end;
+      if num= 4 then
+      begin
+        Result:= DeleteDirectory(Profiles[i].Path, false);
+        if Result then
+        begin
+          ProfileIni.EraseSection('Profile'+InttoStr(Profiles[i].Number));
+          LogSession.add(DateTimeToStr(now)+' - '+Format(logprofdel, [Profiles[i].Name]));
+        end else LogSession.add(DateTimeToStr(now)+' - '+Format(logcannotdelprof, [Profiles[i].Name]));
+      end else
+      begin
+        Result:= RenameFile(Profiles[i].Path, ChompPathDelim(ERestPath.Text)+'_bk'+inttostr(num+1));
+        if Result then
+        begin
+          Profiles[i].Number:=0;        // to exclude it from count
+          FreeProfNum:= DetFreeProfileNum;
+          ProfileIni.WriteString ('Profile'+IntToStr(FreeProfNum), 'Name', Profiles[RestProfSel.LBS.ItemIndex].Name+'_bk'+inttostr(num+1));
+          ProfileIni.WriteString ('Profile'+IntToStr(FreeProfNum), 'IsRelative', '1');
+          x:= Pos('rofiles', ChompPathDelim(ERestPath.Text)+'_bk'+inttostr(num+1));
+          Relativepath:= Copy(ChompPathDelim(ERestPath.Text)+'_bk'+inttostr(num+1), x-1, length(ChompPathDelim(ERestPath.Text)));
+          RelativePath:= StringReplace(RelativePath, '\', '/', [rfReplaceAll]);
+          ProfileIni.WriteString ('Profile'+IntToStr(FreeProfNum), 'Path', RelativePath);
+          LogSession.add(DateTimeToStr(now)+' - '+Format(logprofren, [Profiles[i].Name, Profiles[RestProfSel.LBS.ItemIndex].Name+'_bk'+inttostr(num+1)]));
+        end else LogSession.add(DateTimeToStr(now)+' - '+Format(logcannotrenprof, [Profiles[i].Name]));
+       end;
+    end;
+    ListProfiles(ProfileType);
+  end;
+  ProfileIni.Free;
 end;
 
 procedure TFoxBirdBack.BtnLogClick(Sender: TObject);
@@ -1094,15 +1183,13 @@ begin
   end;
 end;
 
-// Read language file items
-procedure TFoxBirdBack.ModLangue ;
+// Read language file strings, can be called on form creation
+procedure TFoxBirdBack.ModLangStrings;
 begin
   With LangFile do
   begin
-    caption_prefix:= ReadString(LangStr, 'caption_prefix', 'Sauvegarde de profil %s');
-    Aboutbox.Caption:= ReadString(LangStr, 'Aboutbox.Caption', 'A propos de FoxBirdBackup');
-    AboutBox.LUpdate.Caption:= ReadString(LangStr, 'AboutBox.LUpdate.Caption', 'Recherche de mise à jour');
     // Diverse strings
+    caption_prefix:= ReadString(LangStr, 'caption_prefix', 'Sauvegarde de profil %s');
     default_profile_caption:= ReadString(LangStr, 'default_profile_caption', '%s (profil par défaut)');
     delete_backup_title:= ReadString(LangStr, 'delete_backup_title', 'Supprimer une sauvegarde');
     delete_backup_caption:= ReadString(LangStr, 'delete_backup_caption', 'Voulez-vous supprimer la sauvegarde "%s" ?');
@@ -1117,8 +1204,6 @@ begin
     btn_export_caption:= ReadString(LangStr, 'btn_export_caption', 'Exporter');
     cannot_export:= ReadString(LangStr, 'cannot_export', 'Exportation de "%s" impossible,%svoir le fichier log pour plus de détails');
     cannot_import:= ReadString(LangStr, 'cannot import', 'Importation de "%s" impossible,%svoir le fichier log pour plus de détails');
-    ODImpBack.Title:= ReadString(LangStr, 'ODImpBack.Title',ODImpBack.Title);
-    SDRestorePath.Title:= ReadString(LangStr, 'SDRestorePath.Title', SDRestorePath.Title);
     cannot_save_app_open:= ReadString(LangStr, 'cannot_save_app_open', '%s est ouvert, opération impossible') ;
     cannot_restore_profile_locked:= ReadString(LangStr, 'cannot_restore_profile_locked',
                                                'Impossible de restaurer la sauvegarde %s Profil verrouillé ou inacessible');
@@ -1126,6 +1211,44 @@ begin
     export_path_caption:=  ReadString(LangStr, 'export_path_caption', 'Chemin d''exportation');
     import_filter:= ReadString(LangStr, 'import_filter', 'Fichiers ZIP|*.zip');
     backup_name_to_import:= ReadString(LangStr, 'backup_name_to_import', 'Sauvegarde à importer');
+        logopenfbb:= ReadString(LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
+    logfftbpath:= ReadString(LangStr, 'logfftbpath', 'Chemin de %s: %s');
+    logfftbbkpath:= ReadString( LangStr, 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
+    loguilang:= ReadString( LangStr, 'loguilang', 'Langue de l''OS: %s');
+    loguserlang:= ReadString(LangStr, 'loguserlang', 'Langue de l''utilisateur: %s');
+    logclosefbb:= ReadString(LangStr, 'logclosefbb', 'Fermeture de FoxBirdBackup');
+    logprofilelist:= ReadString(LangStr, 'logprofilelist', 'Liste des profils de %s');
+    logprofile:= ReadString(LangStr, 'logprofile', 'Chemin du profil %s "%s": %s');
+    logcurprofile:= ReadString(LangStr, 'logcurprofile', 'Profil %s en cours: %s');
+    logbklist:= ReadString(LangStr, 'logbklist', 'Liste des sauvegardes de %s');
+    logbackup:= ReadString(LangStr, 'logbackup', 'Sauvegarde %s #%u: profil %s: %s');
+    logdelbackup:= ReadString(LangStr, 'logdelbackup', 'Sauvegarde "%s" supprimée');
+    logcannotdelbk:= ReadString(LangStr, 'logcannotdelbk', 'Suppression de la sauvegarde "%s" impossible');
+    logimportbk:= ReadString(LangStr, 'logimportbk','Sauvegarde "%s" importée dans %s');
+    logcannotimpbk:= ReadString(LangStr, 'logcannotimpbk', 'Impossible d''importer "%s" : mauvais type de sauvegarde');
+    logoldprofsaved:= ReadString(LangStr, 'logoldprofsaved', 'Old profile saved : %s_bk');
+    logcannotrestprof:= ReadString(LangStr, 'logcannotrestprof', 'Impossible de restaurer le profil: %s');
+    logexportbk:= ReadString(LangStr, 'logexportbk','Sauvegarde "%s" exportée vers %s');
+    logfullrested:= ReadString(LangStr, 'logfullrested', 'Sauvegarde complète "%s" restaurée');
+    logpartrested:= ReadString(LangStr, 'logpartrested', 'Sauvegarde partielle "%s" restaurée');
+    logcreatedbk:= ReadString(LangStr, 'logcreatedbk', 'Sauvegarde "%s" créée');
+    logprofdel:= ReadString(LangStr, 'logprofdel', 'Profil "%s" supprimé');
+    logcannotdelprof:= ReadString(LangStr, 'logcannotdelprof', 'Impossible de supprimer le profil "%s"');
+    logprofren:= ReadString(LangStr, 'logprofren', 'Profil "%s" renommé en "%"');
+    logcannotrenprof:= ReadString(LangStr, 'logcannotrenprof', 'Impossible de renommer le profil "%s"');
+  end;
+end;
+
+// To be called in form activation routine
+procedure TFoxBirdBack.ModLangue ;
+begin
+  ModLangStrings;
+  With LangFile do
+  begin
+    // Components
+    Aboutbox.Caption:= ReadString(LangStr, 'Aboutbox.Caption', 'A propos de FoxBirdBackup');
+    AboutBox.LUpdate.Caption:= ReadString(LangStr, 'AboutBox.LUpdate.Caption', 'Recherche de mise à jour');
+
     // Backup tab
     TSBackup.Caption:= ReadString(LangStr, 'TSBackup.Caption', TSBackup.Caption);
     LPath.Caption:= ReadString(LangStr, 'LPath.Caption', LPath.Caption);
@@ -1135,8 +1258,11 @@ begin
     LLastBkDate.Caption:= ReadString(LangStr, 'LLastBkDate.Caption', LLastBkDate.Caption);
     BtnBack.Caption:= ReadString(LangStr, 'BtnBack.Caption', BtnBack.Caption);
     BtnQuit.Caption:= ReadString(LangStr, 'BtnQuit.Caption', BtnQuit.Caption);
+    BtnLog.Caption:= ReadString(LangStr, 'BtnLog.Caption', BtnLog.Caption);
     BtnAbout.Caption:= ReadString(LangStr, 'BtnAbout.Caption', BtnAbout.Caption);
     // Restore tab
+    ODImpBack.Title:= ReadString(LangStr, 'ODImpBack.Title',ODImpBack.Title);
+    SDRestorePath.Title:= ReadString(LangStr, 'SDRestorePath.Title', SDRestorePath.Title);
     TSRestore.Caption:= ReadString(LangStr, 'TSRestore.Caption', TSRestore.Caption);
     LRestPath.caption:= restore_path_caption;
     LProfName.Caption:= ReadString(LangStr, 'LProfName.Caption', LProfName.Caption);
@@ -1166,27 +1292,6 @@ begin
     FLogView.LSelLines.Caption:= ReadString(LangStr, 'FLogView.LSelLines.Caption', FLogView.LSelLines.Caption);
     FLogView.BtnQuit.Caption:= BtnQuit.Caption;
     FLogView.BtnPrint.Caption:= ReadString(LangStr, 'FLogView.BtnPrint.Caption', FLogView.BtnPrint.Caption);
-    logopenfbb:= ReadString(LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
-    logfftbpath:= ReadString(LangStr, 'logfftbpath', 'Chemin de %s: %s');
-    logfftbbkpath:= ReadString( LangStr, 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
-    loguilang:= ReadString( LangStr, 'loguilang', 'Langue de l''OS: %s');
-    loguserlang:= ReadString(LangStr, 'loguserlang', 'Langue de l''utilisateur: %s');
-    logclosefbb:= ReadString(LangStr, 'logclosefbb', 'Fermeture de FoxBirdBackup');
-    logprofilelist:= ReadString(LangStr, 'logprofilelist', 'Liste des profils de %s');
-    logprofile:= ReadString(LangStr, 'logprofile', 'Chemin du profil %s "%s": %s');
-    logcurprofile:= ReadString(LangStr, 'logcurprofile', 'Profil %s en cours: %s');
-    logbklist:= ReadString(LangStr, 'logbklist', 'Liste des sauvegardes de %s');
-    logbackup:= ReadString(LangStr, 'logbackup', 'Sauvegarde %s #%u: profil %s: %s');
-    logdelbackup:= ReadString(LangStr, 'logdelbackup', 'Sauvegarde "%s" supprimée');
-    logcannotdelbk:= ReadString(LangStr, 'logcannotdelbk', 'Suppression de la sauvegarde "%s" impossible');
-    logimportbk:= ReadString(LangStr, 'logimportbk','Sauvegarde "%s" importée dans %s');
-    logcannotimpbk:= ReadString(LangStr, 'logcannotimpbk', 'Impossible d''importer "%s" : mauvais type de sauvegarde');
-    logoldprofsaved:= ReadString(LangStr, 'logoldprofsaved', 'Old profile saved : %s_bk');
-    logcannotrestprof:= ReadString(LangStr, 'logcannotrestprof', 'Impossible de restaurer le profil: %s');
-    logexportbk:= ReadString(LangStr, 'logexportbk','Sauvegarde "%s" exportée vers %s');
-    logfullrested:= ReadString(LangStr, 'logfullrested', 'Sauvegarde complète "%s" restaurée');
-    logpartrested:= ReadString(LangStr, 'logpartrested', 'Sauvegarde partielle "%s" restaurée');
-    logcreatedbk:= ReadString(LangStr, 'logcreatedbk', 'Sauvegarde "%s" créée');
   end;
 end;
 

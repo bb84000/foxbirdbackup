@@ -46,6 +46,7 @@ LLastBackup.Caption=Last backup
 LLastBkDate.Caption=Date
 BtnBack.Caption=Backup
 BtnQuit.Caption=Quit
+BtnLog.Caption= Display log
 BtnAbout.Caption=About
 ;Restore tab
 TSRestore.Caption=Backup management and restore
@@ -94,6 +95,11 @@ logexportbk=Backup "%s" exported to %s
 logfullrested=Full backup "%s" restored
 logpartrested=Partial backup "%s" restored
 logcreatedbk=Backup "%s" created
+logprofdel=Profile "%s" deleted
+logcannotdelprof=Cannot delete profile "%s"
+logprofren=Profile "%s" renamed to "%"
+logcannotrenprof=Cannot rename profile "%s"
+
 
 ;Français
 [fr]
@@ -132,6 +138,7 @@ LLastBackup.Caption=Dernière sauvegarde
 LLastBkDate.Caption=Date
 BtnBack.Caption=Sauvegarder
 BtnQuit.Caption=Quitter
+BtnLog.Caption=Voir journal
 BtnAbout.Caption=A propos
 ;Restore tab
 TSRestore.Caption=Gestion et restauration de sauvegarde
@@ -181,3 +188,8 @@ logexportbk=Sauvegarde "%s" exportée vers %s
 logfullrested=Sauvegarde complète "%s" restaurée
 logpartrested=Sauvegarde partielle "%s" restaurée
 logcreatedbk=Sauvegarde "%s" créée
+logprofdel=Profil "%s" supprimé
+logcannotdelprof=Impossible de supprimer le profil "%s"
+logprofren=Profil "%s" renommé en "%"
+logcannotrenprof=Impossible de renommer le profil "%s"
+

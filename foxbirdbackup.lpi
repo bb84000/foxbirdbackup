@@ -19,8 +19,8 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="1"/>
-      <BuildNr Value="4"/>
-      <StringTable Comments="www.sdtp.com" CompanyName="sdtp" FileDescription="Backup for Mozilla Firefox and Thunderbird" InternalName="foxbirdbackup" LegalCopyright="sdtp - bb95" LegalTrademarks="sdtp - bb95" OriginalFilename="foxbirdbackup.exe" ProductName="foxbirdbackup" ProductVersion="1.1.0.4"/>
+      <RevisionNr Value="1"/>
+      <StringTable Comments="www.sdtp.com" CompanyName="sdtp" FileDescription="Backup for Mozilla Firefox and Thunderbird" InternalName="foxbirdbackup" LegalCopyright="sdtp - bb95" LegalTrademarks="sdtp - bb95" OriginalFilename="foxbirdbackup.exe" ProductName="foxbirdbackup" ProductVersion="1.1.1.0"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>

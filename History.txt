@@ -99,6 +99,14 @@ Traduction des messages du journal
 Sécurisation de la routine de formatage de texte
 Détection du jeu de caractères des fichiers ini et traitement en conséquence
 
+Version 1.1.0.5 - 13/06/2019
+Séparation de la localisation des chaines de texte qui peuvent être appelées dès
+la création de la forme, des captions de composants qui ne peuvent être appelées
+qu'à l'activation de la forme.
+
+Version 1.1.1.0 - 17/06/2019
+Amélioration de la gestion des restaurations antérieures. Les cinq dernières sont conservées
+
 
 
 
