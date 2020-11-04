@@ -32,8 +32,8 @@ uses
      Win32Proc,
   {$ENDIF} Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, Buttons, Menus, FileUtil, lazfileutils,
-  strutils, lazbbutils, LazUTF8, zipper, lazbbosversion, lazbbinifiles,
-  logview1;
+  strutils, lazbbutils, LazUTF8, zipper, lazbbosver, lazbbinifiles,
+  logview1, lazbbabout;
 
 type
   TMozApp = (ff, tb);
@@ -135,7 +135,7 @@ type
   private
     first: Boolean;
     OS: String;
-    OsInfo: TOSInfo;
+    OsVersion: TOSVersion;
     CRLF: String;
     CompileDateTime: TDateTime;
     version: string;
@@ -148,7 +148,9 @@ type
     UserPath, UserAppsDataPath: String;
     ffpath, tbpath: String;
     AppdataPath, FireBack, ThunderBack: String;
+    use64bitcaption: string;
     Profiles : TProfiles;
+    OKBtn: String;
     Backups: TBackups;
     ProfilesCount : Integer;
     CurrentProfile: Integer;
@@ -231,6 +233,12 @@ begin
   OS:= 'Unk';
   UserPath:= GetUserDir;
   UserAppsDataPath:= UserPath;
+  {$IFDEF CPU32}
+     OSTarget := '32 bits';
+  {$ENDIF}
+  {$IFDEF CPU64}
+     OSTarget := '64 bits';
+  {$ENDIF}
   {$IFDEF Linux}
      OS:= 'Linux';
      CRLF:= #10;
@@ -240,7 +248,6 @@ begin
      x:= pos('.', LangStr);
      LangStr:= Copy(LangStr,0, 2);
      wxbitsrun:= 0;
-     GetSysInfo(OsInfo);
   {$ENDIF}
   {$IFDEF WINDOWS}
      OS:= 'Windows ';
@@ -252,20 +259,9 @@ begin
      ffpath:= UserAppsDataPath+'Mozilla'+PathDelim+'Firefox'+PathDelim; //Profiles\<profile folder>
      tbpath:= UserAppsDataPath+'Thunderbird'+PathDelim;
      LazGetShortLanguageID(LangStr);
-     GetSysInfo(OsInfo);
-  {$ENDIF}
-  {$IFDEF WIN32}
-      OSTarget:= '32 bits';
-  {$ENDIF}
-  {$IFDEF WIN64}
-      OSTarget:= '64 bits';
   {$ENDIF}
   // Compilation date/time
-  try
-    CompileDateTime:= Str2Date({$I %DATE%}, 'YYYY/MM/DD')+StrToTime({$I %TIME%});
-  except
-    CompileDateTime:=  now();
-  end;
+  CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
   uilang:= LangStr;
   version:= GetVersionInfo.ProductVersion;
    AppdataPath:= UserAppsDataPath+'foxbirdbackup'+PathDelim;
@@ -296,9 +292,10 @@ begin
     LangStr:= 'en';
   end;
   ModLangStrings;
+  OSVersion:= TOSVersion.Create(LangStr, LangFile);
   //logopenfbb:= LangFile.ReadString( LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
   LogSession.Add(DateTimeToStr(now)+' - '+FormatS(logopenfbb, [Version, OSTarget]));
-  LogSession.Add(DateTimeToStr(now)+' - '+OsInfo.VerDetail);
+  LogSession.Add(DateTimeToStr(now)+' - '+OsVersion.VerDetail);
   //logfftbpath:= LangFile.ReadString( LangStr, 'logfftbpath', 'Chemin de %s: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['FF', ffpath]));
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['TB', tbpath]));
@@ -335,7 +332,10 @@ begin
     UpdateUrl:= 'http://www.sdtp.com/versions/version.php?program=foxbirdbackup&version=';
     ModLangue;
     Caption:= FormatS(caption_prefix, [AppToBack]);
-     LRestPath.Caption:= restore_path_caption;
+    LRestPath.Caption:= restore_path_caption;
+    if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
+      MsgDlg(Caption, use64bitcaption, mtInformation,  [mbOK], [OKBtn]);
+    Application.ProcessMessages;
     //Aboutbox.Caption:= 'A propos de FoxBirdBackup';            // in ModLangue
     AboutBox.Image1.Picture.Icon.LoadFromResourceName(HInstance, 'iffox');  ;
     AboutBox.LProductName.Caption:= GetVersionInfo.ProductName;
@@ -345,7 +345,7 @@ begin
     //AboutBox.LUpdate.Caption:= 'Recherche de mise à jour';      // in Modlangue
     AboutBox.UrlWebsite:=GetVersionInfo.Comments;
     PageControl1.ActivePage:= TSBackup;
-    PStatus.Caption:= ' '+OsInfo.VerDetail;
+    PStatus.Caption:= ' '+OsVersion.VerDetail;
     EProfilePath.Text:= ffpath;
     EBackfolder.Text:= FireBack;
     ProfileType:= ff;
@@ -1040,6 +1040,7 @@ var
    TheFileList:TstringList;
    i: integer;
    Fentry: string;
+   FZEntry : TZipFileEntry;
 begin
 Result:= True;
   FrmDate.DateSeparator:= '/';
@@ -1073,7 +1074,9 @@ Result:= True;
         FEntry:= CreateRelativePath(TheFileList[i],szPathEntry);
         // Dont Zip absolute path info
         if copy(Fentry, 0, 2) <> Copy(TheFileList[i],0, 2) then
-        ZEntries.AddFileEntry(TheFileList[i],FEntry);
+        begin
+          FZEntry:= ZEntries.AddFileEntry(TheFileList[i],FEntry);
+        end;
       end;
     finally
       TheFileList.Free;
@@ -1236,6 +1239,7 @@ begin
     logcannotdelprof:= ReadString(LangStr, 'logcannotdelprof', 'Impossible de supprimer le profil "%s"');
     logprofren:= ReadString(LangStr, 'logprofren', 'Profil "%s" renommé en "%"');
     logcannotrenprof:= ReadString(LangStr, 'logcannotrenprof', 'Impossible de renommer le profil "%s"');
+    Use64bitcaption:=ReadString(LangStr,'Use64bitcaption','Utilisez la version 64 bits de ce programme');
   end;
 end;
 
@@ -1248,7 +1252,7 @@ begin
     // Components
     Aboutbox.Caption:= ReadString(LangStr, 'Aboutbox.Caption', 'A propos de FoxBirdBackup');
     AboutBox.LUpdate.Caption:= ReadString(LangStr, 'AboutBox.LUpdate.Caption', 'Recherche de mise à jour');
-
+    OKBtn:= ReadString(LangStr, 'OKBtn','OK');
     // Backup tab
     TSBackup.Caption:= ReadString(LangStr, 'TSBackup.Caption', TSBackup.Caption);
     LPath.Caption:= ReadString(LangStr, 'LPath.Caption', LPath.Caption);
@@ -1292,6 +1296,7 @@ begin
     FLogView.LSelLines.Caption:= ReadString(LangStr, 'FLogView.LSelLines.Caption', FLogView.LSelLines.Caption);
     FLogView.BtnQuit.Caption:= BtnQuit.Caption;
     FLogView.BtnPrint.Caption:= ReadString(LangStr, 'FLogView.BtnPrint.Caption', FLogView.BtnPrint.Caption);
+
   end;
 end;
 

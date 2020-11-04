@@ -107,6 +107,12 @@ qu'à l'activation de la forme.
 Version 1.1.1.0 - 17/06/2019
 Amélioration de la gestion des restaurations antérieures. Les cinq dernières sont conservées
 
+Version 1.1.1.1 - 04/11/2020
+- In Lazzbbutils changed DateTimeToString function name to TimeDateToString
+  to avoid conflict with DateTimeToString procedure, and StringToDateTime to
+  StringToTimeDate for coherency
+- New unit to get OS version
+- Alert if 32 bit app is running on 64 bit OS
 
 
 
