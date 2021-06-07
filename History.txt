@@ -114,6 +114,9 @@ Version 1.1.1.1 - 04/11/2020
 - New unit to get OS version
 - Alert if 32 bit app is running on 64 bit OS
 
+Version 1.1.1.2 - 07/06/2021
+- Corrected lazbbosver bug with Win 10 21H1
+
 
 
 

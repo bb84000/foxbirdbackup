@@ -1,6 +1,6 @@
 {**************************************************************************************}
 { FoxBirdBackup : Sauvegarde et restauration des profils Firefox et Thunderbird        }
-{ bb - sdtp - may 2019                                                                 }
+{ bb - sdtp - june 2021                                                                 }
 {  ff, tb  addons.json, addonStartup.json.lz4 : Extensions                             }
 {  ff, tb  extensions : dossier des extensions installées                              }
 {  ff, tb  places.sqlite : marque pages et historique                                  }

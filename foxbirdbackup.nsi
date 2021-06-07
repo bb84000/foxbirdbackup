@@ -1,9 +1,11 @@
-;Installation script for FoxBirdBackup
-
 ;--------------------------------
-
+; Installation script for FoxBirdBackup
+; bb - sdtp - june 2021
+;--------------------------------
+  Unicode true
+  
   !include MUI2.nsh
-  !include "${NSISDIR}\Contrib\Modern UI\BB.nsh"
+  ;!include "${NSISDIR}\Contrib\Modern UI\BB.nsh"
   !include x64.nsh
   !include FileFunc.nsh
 
