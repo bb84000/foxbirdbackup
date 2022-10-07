@@ -117,6 +117,14 @@ Version 1.1.1.1 - 04/11/2020
 Version 1.1.1.2 - 07/06/2021
 - Corrected lazbbosver bug with Win 10 21H1
 
+Version 1.1.2.0 - 07/10/2022
+- Correction of wrong characters in paths with external unzipper
+- Uses TbbOsVersion inbstead lazbbosver unit
+- Update search in about box now on Github
+- Rewritten installer to proper identifiate 32/64 bit OS
+
+
+
 
 
 

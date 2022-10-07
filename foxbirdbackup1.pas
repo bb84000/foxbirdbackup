@@ -1,6 +1,6 @@
 {**************************************************************************************}
 { FoxBirdBackup : Sauvegarde et restauration des profils Firefox et Thunderbird        }
-{ bb - sdtp - june 2021                                                                 }
+{ bb - sdtp - october 2022                                                                 }
 {  ff, tb  addons.json, addonStartup.json.lz4 : Extensions                             }
 {  ff, tb  extensions : dossier des extensions installées                              }
 {  ff, tb  places.sqlite : marque pages et historique                                  }
@@ -18,7 +18,7 @@
 {  ff, tb  xulstore.json : paramètres barres d'outils et boutons                       }
 {  ff, tb  prefs.js : préférences utilisateur                                          }
 {  ff, tb  cert9.db : Certificats                                                      }
-{      tb  abook??.mab : Address Book                                                  }
+{      tb  abook??.??? : Address Book                                                  }
 {**************************************************************************************}
 
 unit FoxBirdBackup1;
@@ -32,10 +32,11 @@ uses
      Win32Proc,
   {$ENDIF} Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, Buttons, Menus, FileUtil, lazfileutils,
-  strutils, lazbbutils, LazUTF8, zipper, lazbbosver, lazbbinifiles,
-  logview1, lazbbabout;
+  strutils, lazbbutils, LazUTF8, zipper, lazbbinifiles,
+  logview1, lazbbaboutupdate, lazbbOsVersion;
 
 type
+
   TMozApp = (ff, tb);
 
   TProfile=record
@@ -65,6 +66,7 @@ type
   { TFoxBirdBack }
 
   TFoxBirdBack = class(TForm)
+    OsVersion: TbbOsVersion;
     BtnAbout: TButton;
     BtnBack: TButton;
     BtnQuit: TButton;
@@ -135,7 +137,7 @@ type
   private
     first: Boolean;
     OS: String;
-    OsVersion: TOSVersion;
+    //OsVersion: TOSVersion;
     CRLF: String;
     CompileDateTime: TDateTime;
     version: string;
@@ -162,6 +164,7 @@ type
     ProfileType: TMozApp;
     LastBackup: string;
     LastBackupDate: TDateTime;
+    sUrlProgSite: String;
     caption_prefix: string;
     default_profile_caption: string;
     LogSession: TstringList;
@@ -292,7 +295,7 @@ begin
     LangStr:= 'en';
   end;
   ModLangStrings;
-  OSVersion:= TOSVersion.Create(LangStr, LangFile);
+  //OSVersion:= TOSVersion.Create(LangStr, LangFile);
   //logopenfbb:= LangFile.ReadString( LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
   LogSession.Add(DateTimeToStr(now)+' - '+FormatS(logopenfbb, [Version, OSTarget]));
   LogSession.Add(DateTimeToStr(now)+' - '+OsVersion.VerDetail);
@@ -329,23 +332,25 @@ begin
     AppToBack:= 'Firefox';
     ImgBack.Picture.Icon.LoadFromResourceName(HInstance, 'iffox');
 
-    UpdateUrl:= 'http://www.sdtp.com/versions/version.php?program=foxbirdbackup&version=';
-    ModLangue;
+    //UpdateUrl:= 'http://www.sdtp.com/versions/version.php?program=foxbirdbackup&version=';
+
     Caption:= FormatS(caption_prefix, [AppToBack]);
     LRestPath.Caption:= restore_path_caption;
     if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
       MsgDlg(Caption, use64bitcaption, mtInformation,  [mbOK], [OKBtn]);
     Application.ProcessMessages;
-    //Aboutbox.Caption:= 'A propos de FoxBirdBackup';            // in ModLangue
+    AboutBox.Version:= GetVersionInfo.ProductVersion;
     AboutBox.Image1.Picture.Icon.LoadFromResourceName(HInstance, 'iffox');  ;
     AboutBox.LProductName.Caption:= GetVersionInfo.ProductName;
     AboutBox.LCopyright.Caption:= GetVersionInfo.CompanyName+' - '+DateTimeToStr(CompileDateTime);
     AboutBox.LVersion.Caption:= 'Version: '+Version+' ('+OS+OSTarget+')';
-    AboutBox.UrlUpdate:= UpdateURl+Version;
-    //AboutBox.LUpdate.Caption:= 'Recherche de mise à jour';      // in Modlangue
+    AboutBox.ChkVerURL:= 'https://github.com/bb84000/foxbirdbackup/releases/latest';
+    sUrlProgSite:= 'https://github.com/bb84000/foxbirdbackup/wiki'; // can be localized
+    AboutBox.UrlSourceCode:= 'https://github.com/bb84000/foxbirdbackup';
     AboutBox.UrlWebsite:=GetVersionInfo.Comments;
+    ModLangue;
     PageControl1.ActivePage:= TSBackup;
-    PStatus.Caption:= ' '+OsVersion.VerDetail;
+
     EProfilePath.Text:= ffpath;
     EBackfolder.Text:= FireBack;
     ProfileType:= ff;
@@ -354,6 +359,9 @@ begin
     First:= False;
   end;
 end;
+
+
+
 
 procedure TFoxBirdBack.FormClose(Sender: TObject; var CloseAction: TCloseAction );
 begin
@@ -1052,6 +1060,7 @@ Result:= True;
   AZipper.OnEndFile := @ZipperEndFile;
   AZipper.OnProgress:= @ZipperProgress;
   AZipper.Clear;
+  AZipper.UseLanguageEncoding:= true;
   ZEntries := TZipFileEntries.Create(TZipFileEntry);
   AZipper.Filename := ZipName;
   Comment.Add(IsUtf82Ansi(Profiles[LBS.ItemIndex].Name));
@@ -1188,9 +1197,11 @@ end;
 
 // Read language file strings, can be called on form creation
 procedure TFoxBirdBack.ModLangStrings;
+
 begin
   With LangFile do
   begin
+
     // Diverse strings
     caption_prefix:= ReadString(LangStr, 'caption_prefix', 'Sauvegarde de profil %s');
     default_profile_caption:= ReadString(LangStr, 'default_profile_caption', '%s (profil par défaut)');
@@ -1245,14 +1256,51 @@ end;
 
 // To be called in form activation routine
 procedure TFoxBirdBack.ModLangue ;
+var
+  i: integer;
+  A: TStringArray;
 begin
   ModLangStrings;
   With LangFile do
   begin
+    with OsVersion do
+    begin
+      ProdStrs.Strings[1]:= ReadString(LangStr,'Home','Famille'); ;
+      ProdStrs.Strings[2]:= ReadString(LangStr,'Professional','Entreprise');
+      ProdStrs.Strings[3]:= ReadString(LangStr,'Server','Serveur');
+      for i:= 0 to Win10Strs.count-1 do
+      begin
+        A:= Win10Strs.Strings[i].split('=');
+        Win10Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
+      end;
+      for i:= 0 to Win11Strs.count-1 do
+      begin
+        A:= Win11Strs.Strings[i].split('=');
+        Win11Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
+      end;
+      //
+    end;
+
     // Components
-    Aboutbox.Caption:= ReadString(LangStr, 'Aboutbox.Caption', 'A propos de FoxBirdBackup');
-    AboutBox.LUpdate.Caption:= ReadString(LangStr, 'AboutBox.LUpdate.Caption', 'Recherche de mise à jour');
+    // About
+    if not AboutBox.checked then AboutBox.LUpdate.Caption:=ReadString(LangStr,'AboutBox.LUpdate.Caption',AboutBox.LUpdate.Caption) else
+    begin
+      if AboutBox.NewVersion then AboutBox.LUpdate.Caption:= Format(AboutBox.sUpdateAvailable, [AboutBox.LastVersion])
+      else AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
+    end;
+    AboutBox.sLastUpdateSearch:=ReadString(LangStr,'AboutBox.LastUpdateSearch','Dernière recherche de mise à jour');
+    AboutBox.sUpdateAvailable:=ReadString(LangStr,'AboutBox.UpdateAvailable','Nouvelle version %s disponible');
+    AboutBox.sNoUpdateAvailable:=ReadString(LangStr,'AboutBox.NoUpdateAvailable','FoxBirdBackup est à jour');
+    Aboutbox.Caption:=ReadString(LangStr,'Aboutbox.Caption','A propos du Gestionnaire de programmes');
+    AboutBox.LProductName.Caption:= caption;
+    AboutBox.LProgPage.Caption:= ReadString(LangStr,'AboutBox.LProgPage.Caption', AboutBox.LProgPage.Caption);
+    AboutBox.UrlProgSite:= sUrlProgSite+ ReadString(LangStr,'AboutBox.UrlProgSite','//Accueil');
+    AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);
+    AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', AboutBox.LSourceCode.Caption);
+    AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+
     OKBtn:= ReadString(LangStr, 'OKBtn','OK');
+    PStatus.Caption:= ' '+OsVersion.VerDetail;
     // Backup tab
     TSBackup.Caption:= ReadString(LangStr, 'TSBackup.Caption', TSBackup.Caption);
     LPath.Caption:= ReadString(LangStr, 'LPath.Caption', LPath.Caption);

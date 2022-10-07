@@ -1,6 +1,6 @@
 ;--------------------------------
 ; Installation script for FoxBirdBackup
-; bb - sdtp - june 2021
+; bb - sdtp - october 2021
 ;--------------------------------
   Unicode true
   
@@ -15,7 +15,8 @@
  ;General
   Name "FF/TB Profile backup"
   OutFile "InstFoxBirdBackup.exe"
-  !define source_dir "C:\Users\Bernard\Documents\Lazarus\foxbirdbackup"
+  !define lazarus_dir "C:\Users\Bernard\Documents\Lazarus"
+  !define source_dir "${lazarus_dir}\foxbirdbackup"
 
   RequestExecutionLevel admin
 
@@ -28,6 +29,13 @@
 
   ;Folder selection page
   InstallDir "$PROGRAMFILES\foxbirdbackup"
+  
+  ; Variables to properly manage X64 or X32
+  var exe_to_inst       ; "32.exe" or "64.exe"
+  var exe_to_del
+  var dll_to_inst       ; "32.dll" or "64.dll"
+  var dll_to_del
+  ;var sysfolder         ; system 32 folder
 
   ;--------------------------------
 ; Interface Settings
@@ -51,7 +59,7 @@
 
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE $(licence)
-  ;!insertmacro MUI_PAGE_DIRECTORY
+  !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
 
@@ -100,34 +108,66 @@
 
 ;--------------------------------
 
+!getdllversion  "${source_dir}\foxbirdbackupwin64.exe" expv_
+!define FileVersion "${expv_1}.${expv_2}.${expv_3}.${expv_4}"
+
+  VIProductVersion "${FileVersion}"
+  VIAddVersionKey "FileVersion" "${FileVersion}"
+  VIAddVersionKey "ProductName" "$OutFile"
+  VIAddVersionKey "FileDescription" "FoxBirdBackup Installer"
+  VIAddVersionKey "LegalCopyright" "sdtp - bb"
+  VIAddVersionKey "ProductVersion" "${FileVersion}"
+
+  ; Change nsis brand line
+  BrandingText "$(ProgNameStr) version ${FileVersion} - bb - sdtp"
+
 ; The stuff to install
 
 Section "Dummy Section" SecDummy
   SetShellVarContext all
   SetOutPath "$INSTDIR"
-  Var /GLOBAL prg_to_inst
-  Var /GLOBAL prg_to_del
-  
-  ${If} ${RunningX64}  ; change registry entries and install dir for 64 bit
-     !getdllversion  "${source_dir}\foxbirdbackupwin64.exe" expv_
-     StrCpy "$prg_to_inst" "$INSTDIR\foxbirdbackupwin64.exe"
-     StrCpy "$prg_to_del" "$INSTDIR\foxbirdbackupwin32.exe"
-  ${Else}
-     !getdllversion  "${source_dir}\foxbirdbackupwin32.exe" expv_
-     StrCpy "$prg_to_inst" "$INSTDIR\foxbirdbackupwin32.exe"
-     StrCpy "$prg_to_del" "$INSTDIR\foxbirdbackupwin64.exe"
+
+  ${If} ${RunningX64}
+    SetRegView 64    ; change registry entries and install dir for 64 bit
   ${EndIf}
 
-    ; Dans le cas ou on n'aurait pas pu fermer l'application
+  ;Copy all files, files whhich have the same name in 32 and 64 bit are copied
+  ; with 64 or 32 in their name, the renamed
+  
+  File  "${source_dir}\foxbirdbackupwin64.exe"
+  File  "${source_dir}\foxbirdbackupwin32.exe"
+  
+    ${If} ${RunningX64}  ; change registry entries and install dir for 64 bit
+     StrCpy $exe_to_inst "64.exe"
+     StrCpy $dll_to_inst "64.dll"
+     StrCpy $exe_to_del "32.exe"
+     StrCpy $dll_to_del "32.dll"
+     ;StrCpy $sysfolder "$WINDIR\sysnative"
+  ${Else}
+     StrCpy $exe_to_inst "32.exe"
+     StrCpy $dll_to_inst "32.dll"
+     StrCpy $exe_to_del "64.exe"
+     StrCpy $dll_to_del "64.dll"
+     ;StrCpy $sysfolder "$WINDIR\system32"
+  ${EndIf}
+
+  SetOutPath "$INSTDIR"
+  ; Delete old files if they exist as we can not rename if the file exists
   Delete /REBOOTOK "$INSTDIR\foxbirdbackup.exe"
-  File "${source_dir}\foxbirdbackupwin64.exe"
-  File "${source_dir}\foxbirdbackupwin32.exe"
+  
+  ; Rename 32 or 64 files
+  Rename /REBOOTOK "$INSTDIR\foxbirdbackupwin$exe_to_inst" "$INSTDIR\foxbirdbackup.exe"
+
+  ; delete non used files
+  Delete "$INSTDIR\foxbirdbackupwin$exe_to_del"
+
+  ; Install other files
+  File "${source_dir}\licensf.txt"
+  File "${source_dir}\license.txt"
   File "${source_dir}\history.txt"
   File "${source_dir}\foxbirdbackup.txt"
   File "${source_dir}\foxbirdbackup.lng"
-  Rename /REBOOTOK "$prg_to_inst" "$INSTDIR\foxbirdbackup.exe"
-  Delete /REBOOTOK "$prg_to_del"
-  
+
   ; write out uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"
   

@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, printer4lazarus, FoxBirdBackup1, restprofsel1,
-  logview1, lazbbosversion, lazbbinifiles, lazbbabout
+  logview1, lazbbinifiles, lazbbaboutupdate
   { you can add units after this };
 
 {$R *.res}

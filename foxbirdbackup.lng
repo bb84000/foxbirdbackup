@@ -15,8 +15,22 @@
 Language=English
 caption_prefix=%s profile backup
 OKBtn=OK
+
+;About
+AboutBox.LUpdate.Caption=Search update
 Aboutbox.Caption=About FoxBirdBackup
 AboutBox.LUpdate.Caption=Search update
+AboutBox.UpdateAvailable=New version %s available. Click to download it
+AboutBox.NoUpdateAvailable=FoxBirdBackup is up to date.
+NoLongerChkUpdates=No longer check updates
+AboutBox.LastUpdateSearch=Last update check
+AboutBox.UrlProgSite=
+AboutBox.LProgPage.Caption=Program home page
+AboutBox.LWebSite.Caption=Web site home page
+AboutBox.LSourceCode.Caption=Source code Web page
+UpdateAlertBox=Current version: %sA new version %s is available
+
+
 ; Diverse strings
 default_profile_caption=%s (default profile)
 delete_backup_title=Delete a backup
@@ -118,7 +132,11 @@ Server=Server
 18363=v 1909 "November 2019 update"
 19041=v 2004 "May 2020 update"
 19042=v 20H2 "October 2020 update"
-20241=v 21H1 "Spring 2021 updsate"
+19043=v 21H1 "May 2021 updsate"
+19044=v 21H2 "October 2021 update"
+19045=v 22H2 "October 2022 update"
+22000=v 21H2 "October 2021 Initial Version"
+22621=v 22H2 "September 2022 update" 
 
 
 ;Français
@@ -127,8 +145,22 @@ Server=Server
 Language=Français
 caption_prefix=Sauvegarde de profil %s
 OKBtn=OK
+
+
+
+;About
 Aboutbox.Caption=A propos de FoxBirdBackup
 AboutBox.LUpdate.Caption=Recherche de mise à jour
+AboutBox.UpdateAvailable=Nouvelle version %s disponible. Cliquer pour la télécharger
+AboutBox.NoUpdateAvailable=FoxBirdBazckup est à jour.
+AboutBox.LastUpdateSearch=Dernière recherche de mise à jour
+AboutBox.UrlProgSite=/Accueil
+AboutBox.LProgPage.Caption=Page d'accueil du programme
+AboutBox.LWebSite.Caption=Page d'accueil du site Web
+NoLongerChkUpdates=Ne plus rechercher les mises à jour
+AboutBox.LSourceCode.Caption=Page Web du code source
+UpdateAlertBox=Current version: %sUne nouvelle version %s est disponible
+
 ; Diverse strings
 default_profile_caption=%s (profil par défaut)
 delete_backup_title=Supprimer une sauvegarde
@@ -231,4 +263,8 @@ Server=Serveur
 18363=v 1909 "Novembre 2019"
 19041=v 2004 "Mai 2020"
 19042=v 20H2 "Octobre 2020"
-20241=v 21H1 "Printemps 2021"
+19043=v 21H1 "Mai 2021"
+19044=v 21H2 "Octobre 2021"
+19045=v 22H2 "Octobre 2022"
+22000=v 21H2 "Octobre 2021 Version initiale"
+22621=v 22H2 "Septembre 2022"  
