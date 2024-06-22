@@ -1,4 +1,4 @@
-﻿Firefox and Thunderbird Profile 1.1.2.0
+﻿Firefox and Thunderbird Profile 1.1.3.0
 (Explication en Français à la fin de ce fichier)
 
 OBJECT
@@ -32,8 +32,6 @@ Use Fireback at your own risks. Profiles manipulation can corrupt or lose critic
 Mozilla, Firefox names and logos are property of Mozilla Foundation.
 
 Sauvegarde de profil Firefox  et Thunderbird
-
-FoxBirdBackup Version 1.1.2.0
 
 OBJET
 Sauvegarde et restaure les profils

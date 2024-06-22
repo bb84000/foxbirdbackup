@@ -30,10 +30,14 @@ interface
 uses
   {$IFDEF WINDOWS}
      Win32Proc,
-  {$ENDIF} Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  {$ENDIF} LMessages, lclintf, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, Buttons, Menus, FileUtil, lazfileutils,
   strutils, lazbbutils, LazUTF8, zipper, lazbbinifiles,
   logview1, lazbbaboutupdate, lazbbOsVersion;
+
+const
+  // Message post at the end of activation procedure, processed once the form is shown
+  WM_FORMSHOWN = WM_USER + 1;
 
 type
 
@@ -137,7 +141,6 @@ type
   private
     first: Boolean;
     OS: String;
-    //OsVersion: TOSVersion;
     CRLF: String;
     CompileDateTime: TDateTime;
     version: string;
@@ -185,6 +188,7 @@ type
     logoldprofsaved, logcannotrestprof: string;
     logexportbk, logfullrested, logpartrested, logcreatedbk: string;
     logprofdel, logcannotdelprof, logprofren, logcannotrenprof: string;
+    StartMini: Boolean;
     procedure ModLangStrings;
     procedure ModLangue;
     function ListProfiles(app: TMozApp): boolean;
@@ -200,6 +204,7 @@ type
     Procedure ZipperEndFile(Sender : TObject; Const Ratio : Double) ;
     function DetFreeProfileNum : integer;
     function DelRenBackup(num: integer; apppath: string): Boolean;
+    procedure OnFormShown(var Msg: TLMessage); message WM_FORMSHOWN;
   public
 
   end;
@@ -218,18 +223,24 @@ implementation
 uses restprofsel1;
 { TFoxBirdBack }
 
+// Procedure to answer post message at the end of activation procedure
+// so once form is shown
 
+procedure TFoxBirdBack.OnFormShown(var Msg: TLMessage);
+begin
+  if StartMini then Application.minimize;
+  StartMini:= false;
+end;
 
 // Creation de la forme et initialisation des variables et paths
 procedure TFoxBirdBack.FormCreate(Sender: TObject);
 var
   s: string;
   langfound: Boolean;
-  i, x: integer;
+  i: integer;
   uilang: string;
 begin
   inherited;
- // Application.CreateForm(TFLogView, FLogView);      //we need this as we use it to store log messages
   First:= true;
   LogSession:= TStringList.create;
   ReallyCanClose:= True;
@@ -295,27 +306,18 @@ begin
     LangStr:= 'en';
   end;
   ModLangStrings;
-  //OSVersion:= TOSVersion.Create(LangStr, LangFile);
-  //logopenfbb:= LangFile.ReadString( LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
   LogSession.Add(DateTimeToStr(now)+' - '+FormatS(logopenfbb, [Version, OSTarget]));
   LogSession.Add(DateTimeToStr(now)+' - '+OsVersion.VerDetail);
-  //logfftbpath:= LangFile.ReadString( LangStr, 'logfftbpath', 'Chemin de %s: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['FF', ffpath]));
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['TB', tbpath]));
-  //logfftbbkpath:= LangFile.ReadString( LangStr, 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbbkpath, ['FF', FireBack]));
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbbkpath, ['TB', ThunderBack]));
-  //loguilang:= LangFile.ReadString( LangStr, 'loguilang', 'Langue de l''OS: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(loguilang, [uilang]));
-  //loguserlang:= LangFile.ReadString(loguserlang, 'loguserlang', 'Langue de l''utilisateur: %s');
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(loguserlang, [LangStr]));
-
 end;
 
 procedure TFoxBirdBack.FormDestroy(Sender: TObject);
 begin
-
-  //FreeAndNil(LogSession);
   FreeAndNil(LangIds);
   FreeAndNil(LangFile);
 end;
@@ -323,17 +325,12 @@ end;
 // Activation de la forme
 
 procedure TFoxBirdBack.FormActivate(Sender: TObject);
-//var
-  //s: string;
 begin
-   // On n'exécute ça qu'une fois, au lancement, c'est Firefox qui est sélectionné par défaut
-   if first then
+  // On n'exécute ça qu'une fois, au lancement, c'est Firefox qui est sélectionné par défaut
+  if first then
   begin
     AppToBack:= 'Firefox';
     ImgBack.Picture.Icon.LoadFromResourceName(HInstance, 'iffox');
-
-    //UpdateUrl:= 'http://www.sdtp.com/versions/version.php?program=foxbirdbackup&version=';
-
     Caption:= FormatS(caption_prefix, [AppToBack]);
     LRestPath.Caption:= restore_path_caption;
     if (Pos('64', OSVersion.Architecture)>0) and (OsTarget='32 bits') then
@@ -350,18 +347,15 @@ begin
     AboutBox.UrlWebsite:=GetVersionInfo.Comments;
     ModLangue;
     PageControl1.ActivePage:= TSBackup;
-
     EProfilePath.Text:= ffpath;
     EBackfolder.Text:= FireBack;
     ProfileType:= ff;
     ListProfiles(ProfileType);
     ListBackups(ProfileType);
     First:= False;
+    //if StartMini then PostMessage(Handle, WM_FORMSHOWN, 0, 0) ;
   end;
 end;
-
-
-
 
 procedure TFoxBirdBack.FormClose(Sender: TObject; var CloseAction: TCloseAction );
 begin
@@ -398,11 +392,9 @@ begin
     ProfileVersion:= ProfileIni.ReadInteger('General','Version', 1);
     // Enumerate sections
     Sections:= TStringList.Create;
-    //ProfileIni.CaseSensitive:= False;   // To be replaced by options but don't work
     ProfileIni.ReadSections(Sections);
     ProfilesCount:= 0;
     CurrentProfile:= 0;
-
     if Sections.Count > 0 then
     begin
       LogSession.add(DateTimeToStr(now)+' - '+FormatS(logprofilelist, [AppToBack]));
@@ -432,8 +424,7 @@ begin
           Profiles[ProfilesCount-1].Number:= StrToInt(copy(ssect,8,2));   // Is it useful ?
           sname:= IsAnsi2Utf8(ProfileIni.ReadString (ssect, 'Name', ''));
           Profiles[ProfilesCount-1].Name:= sname;
-          //LBS.Items.Add(sname);
-          spath:= IsAnsi2Utf8(ProfileIni.ReadString (ssect, 'Path', ''));
+           spath:= IsAnsi2Utf8(ProfileIni.ReadString (ssect, 'Path', ''));
           // New profiles.ini version
           if (ProfileVersion=2) and (sdefpath=spath) then Profiles[ProfilesCount-1].Current:= true;//CurrentProfile:= ProfilesCount-1 ;
           spath:= StringReplace(spath, '/', PathDelim, [rfReplaceAll]);
@@ -529,7 +520,6 @@ begin
       end;
     end;
 end;
-
 
 // Enumeration des sauvegardes
 
@@ -688,8 +678,6 @@ end;
 // Change restoration folder
 procedure TFoxBirdBack.BtnRestFolderClick(Sender: TObject);
 begin
-  //ODImpBack.Title:= 'Sélectionner une sauvegarde';                 In Modlangue
-  //SDRestorePath.Title:= 'Sélectionner un répertoire';
   if RBImport.Checked then
   begin
     ODImpBack.InitialDir:= UserPath;
@@ -704,7 +692,6 @@ begin
     SDRestorePath.InitialDir:= EBackfolder.Text;
     if SDRestorePath.Execute then ERestPath.Text:= SDRestorePath.FileName+PathDelim;
   end;
-
 end;
 
 function TFoxBirdBack.EnableControls(state: boolean): boolean;
@@ -722,7 +709,7 @@ begin
   ProgressBar1.Position:= 0;
 end;
 
-// Detect the first free profile nhumber
+// Detect the first free profile number
 function TFoxBirdBack.DetFreeProfileNum : integer;
 var
   i: integer;
@@ -1017,9 +1004,6 @@ begin
   end;
 end;
 
-
-
-
 procedure TFoxbirdBack.OnArchiveProgress(
   Sender: TObject; Progress: Byte; var Abort: Boolean);
 begin
@@ -1060,7 +1044,7 @@ Result:= True;
   AZipper.OnEndFile := @ZipperEndFile;
   AZipper.OnProgress:= @ZipperProgress;
   AZipper.Clear;
-  AZipper.UseLanguageEncoding:= true;
+  AZipper.UseLanguageEncoding:= true;                   // Store correctly special characters
   ZEntries := TZipFileEntries.Create(TZipFileEntry);
   AZipper.Filename := ZipName;
   Comment.Add(IsUtf82Ansi(Profiles[LBS.ItemIndex].Name));
@@ -1132,8 +1116,6 @@ begin
     EBackfolder.Text:= ThunderBack;
     ProfileType:= tb;
   end;
-
-
   CBAddress.Visible:= RBTbird.Checked;
   ListProfiles(ProfileType);
   ListBackups(ProfileType);
@@ -1142,8 +1124,6 @@ begin
   ImgBack.Picture.Icon.LoadFromResourceName(HInstance,iconid);
   AboutBox.Image1.Picture.Icon.LoadFromResourceName(HInstance, iconid);
 end;
-
-
 
 function TFoxBirdBack.EnableRestItems(state: boolean): boolean;
 begin
@@ -1197,11 +1177,9 @@ end;
 
 // Read language file strings, can be called on form creation
 procedure TFoxBirdBack.ModLangStrings;
-
 begin
   With LangFile do
   begin
-
     // Diverse strings
     caption_prefix:= ReadString(LangStr, 'caption_prefix', 'Sauvegarde de profil %s');
     default_profile_caption:= ReadString(LangStr, 'default_profile_caption', '%s (profil par défaut)');
@@ -1261,26 +1239,10 @@ var
   A: TStringArray;
 begin
   ModLangStrings;
+  // Translate OSVersion component
+  OsVersion.Translate(LAngFile);
   With LangFile do
   begin
-    with OsVersion do
-    begin
-      ProdStrs.Strings[1]:= ReadString(LangStr,'Home','Famille'); ;
-      ProdStrs.Strings[2]:= ReadString(LangStr,'Professional','Entreprise');
-      ProdStrs.Strings[3]:= ReadString(LangStr,'Server','Serveur');
-      for i:= 0 to Win10Strs.count-1 do
-      begin
-        A:= Win10Strs.Strings[i].split('=');
-        Win10Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
-      end;
-      for i:= 0 to Win11Strs.count-1 do
-      begin
-        A:= Win11Strs.Strings[i].split('=');
-        Win11Strs.Strings[i]:= A[0]+'='+ReadString(LangStr,A[0],A[1]);
-      end;
-      //
-    end;
-
     // Components
     // About
     if not AboutBox.checked then AboutBox.LUpdate.Caption:=ReadString(LangStr,'AboutBox.LUpdate.Caption',AboutBox.LUpdate.Caption) else
