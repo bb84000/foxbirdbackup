@@ -37,16 +37,22 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="lazbbcomponents"/>
+        <PackageName Value="ExCtrlsPkg"/>
       </Item1>
       <Item2>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="TaurusTLSRT"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lazbbcomponents"/>
       </Item3>
+      <Item4>
+        <PackageName Value="Printer4Lazarus"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="LCL"/>
+      </Item5>
     </RequiredPackages>
     <Units Count="6">
       <Unit0>

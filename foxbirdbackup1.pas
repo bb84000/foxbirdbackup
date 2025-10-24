@@ -1,6 +1,6 @@
 {**************************************************************************************}
 { FoxBirdBackup : Sauvegarde et restauration des profils Firefox et Thunderbird        }
-{ bb - sdtp - october 2022                                                                 }
+{ bb - sdtp - october 2022                                                             }
 {  ff, tb  addons.json, addonStartup.json.lz4 : Extensions                             }
 {  ff, tb  extensions : dossier des extensions installées                              }
 {  ff, tb  places.sqlite : marque pages et historique                                  }
@@ -33,7 +33,7 @@ uses
   {$ENDIF} LMessages, lclintf, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, Buttons, Menus, FileUtil, lazfileutils,
   strutils, lazbbutils, LazUTF8, zipper, lazbbinifiles,
-  logview1, lazbbaboutupdate, lazbbOsVersion;
+  logview1, lazbbaboutdlg, lazbbOsVersion, lazbbUpdateDlg;
 
 const
   // Message post at the end of activation procedure, processed once the form is shown
@@ -143,6 +143,7 @@ type
     OS: String;
     CRLF: String;
     CompileDateTime: TDateTime;
+    progname: String;
     version: string;
     OSTarget: String;
     UpdateURL: string;
@@ -152,6 +153,7 @@ type
     AppToBack: String;
     UserPath, UserAppsDataPath: String;
     ffpath, tbpath: String;
+    FBBExecPath: String;
     AppdataPath, FireBack, ThunderBack: String;
     use64bitcaption: string;
     Profiles : TProfiles;
@@ -172,7 +174,7 @@ type
     default_profile_caption: string;
     LogSession: TstringList;
     delete_backup_title, delete_backup_caption, cannot_delete_bk_caption: string;
-    btn_yes_caption, btn_no_caption, btn_abort_caption, btn_cancel_caption: string;
+    YesBtn, NoBtn, AbortBtn, CancelBtn: string;
     btn_backup_caption, btn_restore_caption, btn_import_caption, btn_export_caption: string;
     cannot_save_app_open, cannot_restore_profile_locked : string;
     cannot_export, cannot_import : String;
@@ -191,6 +193,7 @@ type
     StartMini: Boolean;
     procedure ModLangStrings;
     procedure ModLangue;
+    procedure Translate(LngFile: TBbInifile);
     function ListProfiles(app: TMozApp): boolean;
     function ListBackups(app: TMozApp): boolean;
     procedure SortBacks(var Backs: TBackups; stype : TSortType);
@@ -247,6 +250,8 @@ begin
   OS:= 'Unk';
   UserPath:= GetUserDir;
   UserAppsDataPath:= UserPath;
+  ProgName:= 'FoxBirdBackup';
+  FBBExecPath:= ExtractFilePath(Application.ExeName);
   {$IFDEF CPU32}
      OSTarget := '32 bits';
   {$ENDIF}
@@ -269,16 +274,17 @@ begin
      // get user data folder
      s:= ExtractFilePath(ExcludeTrailingPathDelimiter(GetAppConfigDir(False)));
      if  Ord(WindowsVersion) < 7 then UserAppsDataPath:= s                     // NT to XP
-     else UserAppsDataPath:= ExtractFilePath(ExcludeTrailingPathDelimiter(s))+'Roaming\';  // Vista to W10
-     ffpath:= UserAppsDataPath+'Mozilla'+PathDelim+'Firefox'+PathDelim; //Profiles\<profile folder>
-     tbpath:= UserAppsDataPath+'Thunderbird'+PathDelim;
+     else UserAppsDataPath:= ExtractFilePath(ExcludeTrailingPathDelimiter(s))+'Roaming';  // Vista to W10
+
+     ffpath:= UserAppsDataPath+PathDelim+'Mozilla'+PathDelim+'Firefox'+PathDelim; //Profiles\<profile folder>
+     tbpath:= UserAppsDataPath+PathDelim+'Thunderbird'+PathDelim;
      LazGetShortLanguageID(LangStr);
   {$ENDIF}
   // Compilation date/time
   CompileDateTime:= StringToTimeDate({$I %DATE%}+' '+{$I %TIME%}, 'yyyy/mm/dd hh:nn:ss');
   uilang:= LangStr;
   version:= GetVersionInfo.ProductVersion;
-   AppdataPath:= UserAppsDataPath+'foxbirdbackup'+PathDelim;
+   AppdataPath:= UserAppsDataPath+PathDelim+ProgName+PathDelim;
    if not DirectoryExists(AppdataPath) then CreateDir(AppdataPath);
    if FileExists(AppdataPath+'log.txt') then
    begin
@@ -291,21 +297,26 @@ begin
    if not DirectoryExists(FireBack) then CreateDir(FireBack);
    ThunderBack:= AppdataPath+'thunderback'+PathDelim;
    if not DirectoryExists(ThunderBack) then CreateDir(ThunderBack);
-   LangFile:= TBbIniFile.create(ExtractFilePath(Application.ExeName)+'foxbirdbackup.lng');
-   LangIds:= TStringList.Create;
-   LangFound:= False;
-   LangFile.ReadSections(LangIds);
-   if LangIds.Count > 1 then
-    For i:= 0 to LangIds.Count-1 do
-    begin
-      If LangIds.Strings[i] = LangStr then LangFound:= True;
-    end;
+   // Chargement des chaînes de langue...
+   // LangFile:= TBbIniFile.create(ExtractFilePath(Application.ExeName)+'foxbirdbackup.lng');
+   if Langstr<>'fr' then LangStr:='en';
+   LangFile:= TBbIniFile.create(FBBExecPath+'lang\'+LangStr+'.lng');
+
+   //LangIds:= TStringList.Create;
+   //LangFound:= False;
+   //LangFile.ReadSections(LangIds);
+   //if LangIds.Count > 1 then
+   // For i:= 0 to LangIds.Count-1 do
+   // begin
+   //   If LangIds.Strings[i] = LangStr then LangFound:= True;
+   // end;
   // Si la langue n'est pas traduite, alors on passe en Anglais
-  If not LangFound then
-  begin
-    LangStr:= 'en';
-  end;
-  ModLangStrings;
+  //If not LangFound then
+  //begin
+  //  LangStr:= 'en';
+  //end;
+  //ModLangStrings;
+  Translate(LangFile);
   LogSession.Add(DateTimeToStr(now)+' - '+FormatS(logopenfbb, [Version, OSTarget]));
   LogSession.Add(DateTimeToStr(now)+' - '+OsVersion.VerDetail);
   LogSession.add(DateTimeToStr(now)+' - '+FormatS(logfftbpath, ['FF', ffpath]));
@@ -345,7 +356,8 @@ begin
     sUrlProgSite:= 'https://github.com/bb84000/foxbirdbackup/wiki'; // can be localized
     AboutBox.UrlSourceCode:= 'https://github.com/bb84000/foxbirdbackup';
     AboutBox.UrlWebsite:=GetVersionInfo.Comments;
-    ModLangue;
+    // ModLangue;
+    Translate(LangFile);
     PageControl1.ActivePage:= TSBackup;
     EProfilePath.Text:= ffpath;
     EBackfolder.Text:= FireBack;
@@ -641,7 +653,7 @@ begin
   if LBR.ItemIndex >= 0 then
   begin
     if MsgDlg(delete_backup_title, FormatS(delete_backup_caption, [ExtractFileName(Backups[LBR.ItemIndex].FileName)]),
-               mtWarning,[mbYes, mbAbort], [btn_yes_caption, btn_abort_caption], 0)= mrYes then
+               mtWarning,[mbYes, mbAbort], [YesBtn, AbortBtn], 0)= mrYes then
     begin
       if DeleteFile(Backups[LBR.ItemIndex].FileName) then
       begin
@@ -1052,7 +1064,9 @@ Result:= True;
   Comment.Add(IsUtf82Ansi(Profiles[LBS.ItemIndex].Path));
   Comment.Add(ProfileString[ord(ProfileType)]);
   AZipper.FileComment:= Comment.Text;
-   // Verify valid directory
+  //Folder:= 'C:\Users\Bernard\AppData\Roaming\Thunderbird\Profiles\jtkqolh0.default-esr\';
+  //  Folder:= 'C:\Users\Bernard\AppData\Roaming\Mozilla\Firefox\Profiles\aoze5q1l.default-release\';
+  // Verify valid directory
   If DirectoryExists(Folder) then
   begin
     DefCursor:= Screen.Cursor;
@@ -1068,6 +1082,8 @@ Result:= True;
         // Dont Zip absolute path info
         if copy(Fentry, 0, 2) <> Copy(TheFileList[i],0, 2) then
         begin
+          // limit filename length
+          if length(TheFileList[i]) <= MAX_PATH+4 then
           FZEntry:= ZEntries.AddFileEntry(TheFileList[i],FEntry);
         end;
       end;
@@ -1078,6 +1094,7 @@ Result:= True;
     begin
       // To animate the progress bar
       Zcount:= ZEntries.Count;
+
       progres:= 0;
       try
         AZipper.ZipFiles(ZEntries);
@@ -1175,35 +1192,164 @@ begin
   end;
 end;
 
+
+procedure TFoxBirdBack.Translate(LngFile: TBbInifile);
+var
+  prgName: String;
+  s: String;
+begin
+  If Assigned(LngFile) then
+  With LngFile do
+  begin
+    prgName:= ReadString('common', 'ProgName', 'Erreur');
+    if prgName<>ProgName then ShowMessage(ReadString('common', 'ProgErr',
+                         'Fichier de langue erroné. Réinstallez le programme'));
+    // Translate OSVersion component
+    OsVersion.Translate(LngFile);
+    OKBtn:= ReadString('common', 'OKBtn','OK');
+    YesBtn:=ReadString('common','YesBtn','Oui');
+    NoBtn:=ReadString('common','NoBtn','Non');
+    CancelBtn:=ReadString('common','CancelBtn','Annuler');
+    //Main Form  & components captions
+    BtnBack.Caption:= ReadString('main', 'BtnBack.Caption', BtnBack.Caption);
+    BtnQuit.Caption:= ReadString('main', 'BtnQuit.Caption', BtnQuit.Caption);
+    BtnLog.Caption:= ReadString('main', 'BtnLog.Caption', BtnLog.Caption);
+    BtnAbout.Caption:= ReadString('main', 'BtnAbout.Caption', BtnAbout.Caption);
+    PStatus.Caption:= ' '+OsVersion.VerDetail;
+    //Strings
+    Use64bitcaption:=ReadString('Main','Use64bitcaption','Utilisez la version 64 bits de ce programme');
+    caption_prefix:= ReadString('main', 'caption_prefix', 'Sauvegarde de profil %s');
+    default_profile_caption:= ReadString('main', 'default_profile_caption', '%s (profil par défaut)');
+    delete_backup_title:= ReadString('main', 'delete_backup_title', 'Supprimer une sauvegarde');
+    delete_backup_caption:= ReadString('main', 'delete_backup_caption', 'Voulez-vous supprimer la sauvegarde "%s" ?');
+    cannot_delete_bk_caption:=  ReadString('main', 'cannot_delete_bk_caption', 'Impossible de supprimer le fichier "%s".');
+    btn_backup_caption:= ReadString('main', 'btn_backup_caption', 'Sauvegarder');
+    btn_restore_caption:= ReadString('main', 'btn_restore_caption', 'Restaurer');
+    btn_import_caption:= ReadString('main', 'btn_import_caption', 'Importer');
+    btn_export_caption:= ReadString('main', 'btn_export_caption', 'Exporter');
+    cannot_export:= ReadString('main', 'cannot_export', 'Exportation de "%s" impossible,%svoir le fichier log pour plus de détails');
+    cannot_import:= ReadString('main', 'cannot import', 'Importation de "%s" impossible,%svoir le fichier log pour plus de détails');
+    cannot_save_app_open:= ReadString('main', 'cannot_save_app_open', '%s est ouvert, opération impossible') ;
+    cannot_restore_profile_locked:= ReadString('main', 'cannot_restore_profile_locked',
+                                               'Impossible de restaurer la sauvegarde %s Profil verrouillé ou inacessible');
+    restore_path_caption:= ReadString('main', 'restore_path_caption', 'Chemin de restauration');
+    export_path_caption:=  ReadString('main', 'export_path_caption', 'Chemin d''exportation');
+    import_filter:= ReadString('main', 'import_filter', 'Fichiers ZIP|*.zip');
+    backup_name_to_import:= ReadString('main', 'backup_name_to_import', 'Sauvegarde à importer');
+    logopenfbb:= ReadString('main', 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
+    logfftbpath:= ReadString('main', 'logfftbpath', 'Chemin de %s: %s');
+    logfftbbkpath:= ReadString( 'main', 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
+    loguilang:= ReadString( 'main', 'loguilang', 'Langue de l''OS: %s');
+    loguserlang:= ReadString('main', 'loguserlang', 'Langue de l''utilisateur: %s');
+    logclosefbb:= ReadString('main', 'logclosefbb', 'Fermeture de FoxBirdBackup');
+    logprofilelist:= ReadString('main', 'logprofilelist', 'Liste des profils de %s');
+    logprofile:= ReadString('main', 'logprofile', 'Chemin du profil %s "%s": %s');
+    logcurprofile:= ReadString('main', 'logcurprofile', 'Profil %s en cours: %s');
+    logbklist:= ReadString('main', 'logbklist', 'Liste des sauvegardes de %s');
+    logbackup:= ReadString('main', 'logbackup', 'Sauvegarde %s #%u: profil %s: %s');
+    logdelbackup:= ReadString('main', 'logdelbackup', 'Sauvegarde "%s" supprimée');
+    logcannotdelbk:= ReadString('main', 'logcannotdelbk', 'Suppression de la sauvegarde "%s" impossible');
+    logimportbk:= ReadString('main', 'logimportbk','Sauvegarde "%s" importée dans %s');
+    logcannotimpbk:= ReadString('main', 'logcannotimpbk', 'Impossible d''importer "%s" : mauvais type de sauvegarde');
+    logoldprofsaved:= ReadString('main', 'logoldprofsaved', 'Old profile saved : %s_bk');
+    logcannotrestprof:= ReadString('main', 'logcannotrestprof', 'Impossible de restaurer le profil: %s');
+    logexportbk:= ReadString('main', 'logexportbk','Sauvegarde "%s" exportée vers %s');
+    logfullrested:= ReadString('main', 'logfullrested', 'Sauvegarde complète "%s" restaurée');
+    logpartrested:= ReadString('main', 'logpartrested', 'Sauvegarde partielle "%s" restaurée');
+    logcreatedbk:= ReadString('main', 'logcreatedbk', 'Sauvegarde "%s" créée');
+    logprofdel:= ReadString('main', 'logprofdel', 'Profil "%s" supprimé');
+    logcannotdelprof:= ReadString('main', 'logcannotdelprof', 'Impossible de supprimer le profil "%s"');
+    logprofren:= ReadString('main', 'logprofren', 'Profil "%s" renommé en "%"');
+    logcannotrenprof:= ReadString('main', 'logcannotrenprof', 'Impossible de renommer le profil "%s"');
+    // Backup tab
+    TSBackup.Caption:= ReadString('main', 'TSBackup.Caption', TSBackup.Caption);
+    LPath.Caption:= ReadString('main', 'LPath.Caption', LPath.Caption);
+    LBackFolder.Caption:= ReadString('main', 'LBackFolder.Caption', LBackFolder.Caption);
+    LBackName.Caption:= ReadString('main', 'LBackName.Caption', LBackName.Caption);
+    LLastBackup.Caption:= ReadString('main', 'LLastBackup.Caption', LLastBackup.Caption);
+    LLastBkDate.Caption:= ReadString('main', 'LLastBkDate.Caption', LLastBkDate.Caption);
+    BtnBack.Caption:= ReadString('main', 'BtnBack.Caption', BtnBack.Caption);
+    BtnQuit.Caption:= ReadString('main', 'BtnQuit.Caption', BtnQuit.Caption);
+    BtnLog.Caption:= ReadString('main', 'BtnLog.Caption', BtnLog.Caption);
+    BtnAbout.Caption:= ReadString('main', 'BtnAbout.Caption', BtnAbout.Caption);
+    // Restore tab
+    ODImpBack.Title:= ReadString('main', 'ODImpBack.Title',ODImpBack.Title);
+    SDRestorePath.Title:= ReadString('main', 'SDRestorePath.Title', SDRestorePath.Title);
+    TSRestore.Caption:= ReadString('main', 'TSRestore.Caption', TSRestore.Caption);
+    LRestPath.caption:= restore_path_caption;
+    LProfName.Caption:= ReadString('main', 'LProfName.Caption', LProfName.Caption);
+    LBackupDate.Caption:= ReadString('main', 'LBackupDate.Caption', LBackupDate.Caption);
+    GroupBox1.Caption:= ReadString('main', 'GroupBox1.Caption', GroupBox1.Caption);
+    RBComplete.Caption:= ReadString('main', 'RBComplete.Caption', RBComplete.Caption);
+    RBPartial.Caption:= ReadString('main', 'RBPartial.Caption', RBPartial.Caption);
+    RBExport.Caption:= ReadString('main', 'RBExport.Caption', RBExport.Caption);
+    RBImport.Caption:= ReadString('main', 'RBImport.Caption', RBImport.Caption);
+    CBFav.Caption:= ReadString('main', 'CBFav.Caption', CBFav.Caption);
+    CBPass.Caption:= ReadString('main', 'CBPass.Caption', CBPass.Caption);
+    CBAutoComp.Caption:= ReadString('main', 'CBAutoComp.Caption', CBAutoComp.Caption);
+    CBUserStyle.Caption:= ReadString('main', 'CBUserStyle.Caption', CBUserStyle.Caption);
+    CBCookies.Caption:= ReadString('main', 'CBCookies.Caption', CBCookies.Caption);
+    CBSearch.Caption:= ReadString('main', 'CBSearch.Caption', CBSearch.Caption);
+    CBApps.Caption:= ReadString('main', 'CBApps.Caption', CBApps.Caption);
+    CBSitePrefs.Caption:= ReadString('main', 'CBSitePrefs.Caption', CBSitePrefs.Caption);
+    CBCertif.Caption:= ReadString('main', 'CBCertif.Caption', CBCertif.Caption);
+    CBExt.Caption:= ReadString('main', 'CBExt.Caption', CBExt.Caption);
+    CBUserPref.Caption:= ReadString('main', 'CBUserPref.Caption', CBUserPref.Caption);
+    CBAddress.Caption:= ReadString('main', 'CBAddress.Caption', CBAddress.Caption);
+    // Selection du profil (disabled in create call)
+    if Assigned(RestProfSel) then
+    begin
+      RestProfSel.Caption:= ReadString('main', 'RestProfSel.Caption', RestProfSel.Caption);
+      RestProfSel.BtnCancel.Caption:= CancelBtn;
+    end;
+    // Fenêtre log
+    if Assigned(FLogView) then
+    begin
+      FLogView.Caption:= ReadString('main', 'FLogView.Caption', FLogView.Caption);
+      FLogView.LSelLines.Caption:= ReadString('main', 'FLogView.LSelLines.Caption', FLogView.LSelLines.Caption);
+      FLogView.BtnQuit.Caption:= BtnQuit.Caption;
+      FLogView.BtnPrint.Caption:= ReadString('main', 'FLogView.BtnPrint.Caption', FLogView.BtnPrint.Caption);
+     end;
+    // About box
+    AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+    AboutBox.Translate(LngFile);
+    // UpdateDlg
+    UpdateDlg.Translate (LangFile);
+    // Alert
+    //sUpdateAlertBox:=ReadString('main','UpdateAlertBox','Version actuelle: %sUne nouvelle version %s est disponible. Cliquer pour la télécharger');
+    //sNoLongerChkUpdates:=ReadString('main','NoLongerChkUpdates','Ne plus rechercher les mises à jour');
+  end;
+end;
+
 // Read language file strings, can be called on form creation
 procedure TFoxBirdBack.ModLangStrings;
 begin
   With LangFile do
   begin
     // Diverse strings
-    caption_prefix:= ReadString(LangStr, 'caption_prefix', 'Sauvegarde de profil %s');
-    default_profile_caption:= ReadString(LangStr, 'default_profile_caption', '%s (profil par défaut)');
-    delete_backup_title:= ReadString(LangStr, 'delete_backup_title', 'Supprimer une sauvegarde');
-    delete_backup_caption:= ReadString(LangStr, 'delete_backup_caption', 'Voulez-vous supprimer la sauvegarde "%s" ?');
-    cannot_delete_bk_caption:=  ReadString(LangStr, 'cannot_delete_bk_caption', 'Impossible de supprimer le fichier "%s".');
-    btn_yes_caption:= ReadString(LangStr, 'btn_yes_caption', 'Oui');
-    btn_no_caption:= ReadString(LangStr, 'btn_no_caption', 'Non');
-    btn_abort_caption:= ReadString(LangStr, 'btn_abort_caption', 'Abandon');
-    btn_cancel_caption:= ReadString(LangStr, 'btn_cancel_caption', 'Annuler');
-    btn_backup_caption:= ReadString(LangStr, 'btn_backup_caption', 'Sauvegarder');
-    btn_restore_caption:= ReadString(LangStr, 'btn_restore_caption', 'Restaurer');
-    btn_import_caption:= ReadString(LangStr, 'btn_import_caption', 'Importer');
-    btn_export_caption:= ReadString(LangStr, 'btn_export_caption', 'Exporter');
-    cannot_export:= ReadString(LangStr, 'cannot_export', 'Exportation de "%s" impossible,%svoir le fichier log pour plus de détails');
-    cannot_import:= ReadString(LangStr, 'cannot import', 'Importation de "%s" impossible,%svoir le fichier log pour plus de détails');
-    cannot_save_app_open:= ReadString(LangStr, 'cannot_save_app_open', '%s est ouvert, opération impossible') ;
-    cannot_restore_profile_locked:= ReadString(LangStr, 'cannot_restore_profile_locked',
-                                               'Impossible de restaurer la sauvegarde %s Profil verrouillé ou inacessible');
-    restore_path_caption:= ReadString(LangStr, 'restore_path_caption', 'Chemin de restauration');
-    export_path_caption:=  ReadString(LangStr, 'export_path_caption', 'Chemin d''exportation');
-    import_filter:= ReadString(LangStr, 'import_filter', 'Fichiers ZIP|*.zip');
+    //caption_prefix:= ReadString(LangStr, 'caption_prefix', 'Sauvegarde de profil %s');
+    //default_profile_caption:= ReadString(LangStr, 'default_profile_caption', '%s (profil par défaut)');
+    //delete_backup_title:= ReadString(LangStr, 'delete_backup_title', 'Supprimer une sauvegarde');
+    //delete_backup_caption:= ReadString(LangStr, 'delete_backup_caption', 'Voulez-vous supprimer la sauvegarde "%s" ?');
+    //cannot_delete_bk_caption:=  ReadString(LangStr, 'cannot_delete_bk_caption', 'Impossible de supprimer le fichier "%s".');
+    // btn_yes_caption:= ReadString(LangStr, 'btn_yes_caption', 'Oui');
+    // NoBtn:= ReadString(LangStr, 'btn_no_caption', 'Non');
+    //btn_abort_caption:= ReadString(LangStr, 'btn_abort_caption', 'Abandon');
+    //btn_cancel_caption:= ReadString(LangStr, 'btn_cancel_caption', 'Annuler');
+    //btn_backup_caption:= ReadString(LangStr, 'btn_backup_caption', 'Sauvegarder');
+    //btn_restore_caption:= ReadString(LangStr, 'btn_restore_caption', 'Restaurer');
+    //btn_import_caption:= ReadString(LangStr, 'btn_import_caption', 'Importer');
+    //btn_export_caption:= ReadString(LangStr, 'btn_export_caption', 'Exporter');
+    //cannot_export:= ReadString(LangStr, 'cannot_export', 'Exportation de "%s" impossible,%svoir le fichier log pour plus de détails');
+    //cannot_import:= ReadString(LangStr, 'cannot import', 'Importation de "%s" impossible,%svoir le fichier log pour plus de détails');
+    //cannot_save_app_open:= ReadString(LangStr, 'cannot_save_app_open', '%s est ouvert, opération impossible') ;
+    //cannot_restore_profile_locked:= ReadString(LangStr, 'cannot_restore_profile_locked',
+    //                                           'Impossible de restaurer la sauvegarde %s Profil verrouillé ou inacessible');
+    //restore_path_caption:= ReadString(LangStr, 'restore_path_caption', 'Chemin de restauration');
+    //export_path_caption:=  ReadString(LangStr, 'export_path_caption', 'Chemin d''exportation');
+    {import_filter:= ReadString(LangStr, 'import_filter', 'Fichiers ZIP|*.zip');
     backup_name_to_import:= ReadString(LangStr, 'backup_name_to_import', 'Sauvegarde à importer');
-        logopenfbb:= ReadString(LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
+    logopenfbb:= ReadString(LangStr, 'logopenfbb', 'Ouverture de FoxbirdBackup %s %s');
     logfftbpath:= ReadString(LangStr, 'logfftbpath', 'Chemin de %s: %s');
     logfftbbkpath:= ReadString( LangStr, 'logfftbbkpath', 'Chemin de sauvegarde de %s: %s');
     loguilang:= ReadString( LangStr, 'loguilang', 'Langue de l''OS: %s');
@@ -1228,7 +1374,7 @@ begin
     logcannotdelprof:= ReadString(LangStr, 'logcannotdelprof', 'Impossible de supprimer le profil "%s"');
     logprofren:= ReadString(LangStr, 'logprofren', 'Profil "%s" renommé en "%"');
     logcannotrenprof:= ReadString(LangStr, 'logcannotrenprof', 'Impossible de renommer le profil "%s"');
-    Use64bitcaption:=ReadString(LangStr,'Use64bitcaption','Utilisez la version 64 bits de ce programme');
+    Use64bitcaption:=ReadString(LangStr,'Use64bitcaption','Utilisez la version 64 bits de ce programme'); }
   end;
 end;
 
@@ -1240,12 +1386,12 @@ var
 begin
   ModLangStrings;
   // Translate OSVersion component
-  OsVersion.Translate(LAngFile);
+  //OsVersion.Translate(LAngFile);
   With LangFile do
   begin
     // Components
     // About
-    if not AboutBox.checked then AboutBox.LUpdate.Caption:=ReadString(LangStr,'AboutBox.LUpdate.Caption',AboutBox.LUpdate.Caption) else
+{    if not AboutBox.checked then AboutBox.LUpdate.Caption:=ReadString(LangStr,'AboutBox.LUpdate.Caption',AboutBox.LUpdate.Caption) else
     begin
       if AboutBox.NewVersion then AboutBox.LUpdate.Caption:= Format(AboutBox.sUpdateAvailable, [AboutBox.LastVersion])
       else AboutBox.LUpdate.Caption:= AboutBox.sNoUpdateAvailable;
@@ -1259,12 +1405,12 @@ begin
     AboutBox.UrlProgSite:= sUrlProgSite+ ReadString(LangStr,'AboutBox.UrlProgSite','//Accueil');
     AboutBox.LWebSite.Caption:= ReadString(LangStr,'AboutBox.LWebSite.Caption', AboutBox.LWebSite.Caption);
     AboutBox.LSourceCode.Caption:= ReadString(LangStr,'AboutBox.LSourceCode.Caption', AboutBox.LSourceCode.Caption);
-    AboutBox.LVersion.Hint:= OSVersion.VerDetail;
+    AboutBox.LVersion.Hint:= OSVersion.VerDetail;     }
 
-    OKBtn:= ReadString(LangStr, 'OKBtn','OK');
-    PStatus.Caption:= ' '+OsVersion.VerDetail;
+    //OKBtn:= ReadString(LangStr, 'OKBtn','OK');
+    //PStatus.Caption:= ' '+OsVersion.VerDetail;
     // Backup tab
-    TSBackup.Caption:= ReadString(LangStr, 'TSBackup.Caption', TSBackup.Caption);
+    {TSBackup.Caption:= ReadString(LangStr, 'TSBackup.Caption', TSBackup.Caption);
     LPath.Caption:= ReadString(LangStr, 'LPath.Caption', LPath.Caption);
     LBackFolder.Caption:= ReadString(LangStr, 'LBackFolder.Caption', LBackFolder.Caption);
     LBackName.Caption:= ReadString(LangStr, 'LBackName.Caption', LBackName.Caption);
@@ -1273,9 +1419,9 @@ begin
     BtnBack.Caption:= ReadString(LangStr, 'BtnBack.Caption', BtnBack.Caption);
     BtnQuit.Caption:= ReadString(LangStr, 'BtnQuit.Caption', BtnQuit.Caption);
     BtnLog.Caption:= ReadString(LangStr, 'BtnLog.Caption', BtnLog.Caption);
-    BtnAbout.Caption:= ReadString(LangStr, 'BtnAbout.Caption', BtnAbout.Caption);
+    BtnAbout.Caption:= ReadString(LangStr, 'BtnAbout.Caption', BtnAbout.Caption); }
     // Restore tab
-    ODImpBack.Title:= ReadString(LangStr, 'ODImpBack.Title',ODImpBack.Title);
+    {ODImpBack.Title:= ReadString(LangStr, 'ODImpBack.Title',ODImpBack.Title);
     SDRestorePath.Title:= ReadString(LangStr, 'SDRestorePath.Title', SDRestorePath.Title);
     TSRestore.Caption:= ReadString(LangStr, 'TSRestore.Caption', TSRestore.Caption);
     LRestPath.caption:= restore_path_caption;
@@ -1300,13 +1446,13 @@ begin
     CBAddress.Caption:= ReadString(LangStr, 'CBAddress.Caption', CBAddress.Caption);
     // Selection du profil
     RestProfSel.Caption:= ReadString(LangStr, 'RestProfSel.Caption', RestProfSel.Caption);
-    RestProfSel.BtnCancel.Caption:= btn_cancel_caption;
+    RestProfSel.BtnCancel.Caption:= CancelBtn;
     // Fenêtre log
     FLogView.Caption:= ReadString(LangStr, 'FLogView.Caption', FLogView.Caption);
     FLogView.LSelLines.Caption:= ReadString(LangStr, 'FLogView.LSelLines.Caption', FLogView.LSelLines.Caption);
     FLogView.BtnQuit.Caption:= BtnQuit.Caption;
     FLogView.BtnPrint.Caption:= ReadString(LangStr, 'FLogView.BtnPrint.Caption', FLogView.BtnPrint.Caption);
-
+   }
   end;
 end;
 

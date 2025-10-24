@@ -1,0 +1,197 @@
+;Fichier de langue
+;Il est possible de créer un fichier de langue en utilisant l'ID de langue comme nom (exemple it.lng)
+;Danois	[da], Néerlandais [nl], Finois [fi], Allemand [de], Grec [el], Hongrois [hu]
+;Islandais [is], Italien [it], Norvégien [no], Polonais [pl], Portugais [pt]
+;Russe [ru], Serbo Croate [sr], Slovaque [sk], Suedois [sv], Turc [tr]
+
+;ProgName doit correspondre à la variable du même nom dans le code de l'application
+
+;Sauvegardez votre fichier, il peut être remplacé ou effacé lors d'une msie à jour !
+;proposez votre traduction sur GitHub
+
+;Français
+
+[common]
+Language=Français
+ProgName=FoxBirdBackup
+ProgErr=Fichier de langue erroné. Réinstallez le programme
+DefaultCaption=Sauvegarde de profil Firefox & Thunderbird
+OKBtn=OK
+YesBtn=Oui
+NoBtn=Non
+CancelBtn=Annuler
+AbortBtn=Abandonner
+
+[main]
+Caption=FoxBirdBackup
+caption_prefix=Sauvegarde de profil %s
+sUse64bitcaption=Utilisez la version 64 bits de ce programme
+BtnAbout.Caption=A propos...
+BtnQuit.Caption=Quitter
+BtnLog.Caption=Voir journal
+
+; Diverse strings
+default_profile_caption=%s (profil par défaut)
+delete_backup_title=Supprimer une sauvegarde
+delete_backup_caption=Voulez-vous supprimer la sauvegarde "%s" ?
+cannot_delete_bk_caption=Impossible de supprimer le fichier "%s".
+btn_backup_caption=Sauvegarder
+btn_restore_caption=Restaurer
+btn_import_caption=Importer
+btn_export_caption=Exporter
+cannot_export=Exportation de "%s" impossible,%svoir le fichier log pour plus de détails
+cannot_import=Importation de "%s" impossible,%svoir le fichier log pour plus de détails
+cannot_save_app_open=%s est ouvert, annulation de l'opération
+cannot_restore_profile_locked=Impossible de restaurer la sauvegarde.%s Profil verrouillé ou inacessible
+restore_path_caption=Chemin de restauration
+export_path_caption=Chemin d'exportation
+import_filter=Fichiers ZIP|*.zip
+backup_name_to_import=Sauvegarde à importer
+;Backup tab
+TSBackup.Caption=Création de sauvegarde
+LPath.Caption=Chemin du profil
+LBackFolder.Caption=Chemin de  la sauvegarde
+LBackName.Caption=Nom de la sauvegarde
+LLastBackup.Caption=Dernière sauvegarde
+LLastBkDate.Caption=Date
+BtnBack.Caption=Sauvegarder
+BtnQuit.Caption=Quitter
+BtnLog.Caption=Voir journal
+BtnAbout.Caption=A propos
+;Restore tab
+TSRestore.Caption=Gestion et restauration de sauvegarde
+LProfName.Caption=Nom du profil
+LBackupDate.Caption=Date sauvegarde
+GroupBox1.Caption=Type
+RBComplete.Caption=Complète
+RBPartial.Caption=Partielle
+RBExport.Caption=Exportation
+RBImport.Caption=Importation
+CBFav.Caption=Favoris, historique
+CBPass.Caption=Mots de passe
+CBAutoComp.Caption=Formulaires
+CBUserStyle.Caption=Styles utilisateur
+CBCookies.Caption=Cookies
+CBSearch.Caption=Moteurs de recherche
+CBApps.Caption=Applications
+CBSitePrefs.Caption)Préférences de sites
+CBCertif.Caption=Certificats
+CBExt.Caption=Extensions
+CBUserPref.Caption=Préférences utilisateur
+CBAddress.Caption=Carnet d'adresses
+; profile selection
+RestProfSel.Caption=Sélection du profil à restaurer
+;Logview
+FLogView.Caption=Journal de FoxbirdBackup
+FLogView.LSelLines.Caption=Sélectionnez les lignes que vous voulez impimer, à défaut tout le journal sera imprimé !
+FLogView.BtnPrint.Caption=Imprimer
+logopenfbb=Ouverture de FoxbirdBackup %s %s
+logfftbpath=Chemin de %s: %s
+logfftbbkpath=Chemin de sauvegarde de %s: %s
+loguilang=Langue de l'OS: %s
+loguserlang=Langue de l'utilisateur: %s
+logclosefbb=Fermeture de FoxBirdBackup
+logprofilelist=Liste des profils de %s
+logprofile=Chemin du profil %s "%s": %s
+logcurprofile=Profil %s en cours: %s
+logbklist=Liste des sauvegardes de %s
+logbackup=Sauvegarde %s #%u: profil "%s": %s
+logdelbackup=Sauvegarde "%s" supprimée
+logcannotdelbk=Suppression de la sauvegarde "%s" impossible
+logimportbk=Sauvegarde "%s" importée dans %s
+logcannotimpbk=Impossible d'importer "%s" : mauvais type de sauvegarde
+logoldprofsaved=Ancien profil sauvegardé: %s_bk
+logcannotrestprof=Impossible de restaurer le profil: %s
+logexportbk=Sauvegarde "%s" exportée vers %s
+logfullrested=Sauvegarde complète "%s" restaurée
+logpartrested=Sauvegarde partielle "%s" restaurée
+logcreatedbk=Sauvegarde "%s" créée
+logprofdel=Profil "%s" supprimé
+logcannotdelprof=Impossible de supprimer le profil "%s"
+logprofren=Profil "%s" renommé en "%"
+logcannotrenprof=Impossible de renommer le profil "%s"
+sNoLongerChkUpdates=Ne plus rechercher de mise à jour
+sUpdateAlertBox=Version actuelle: %sUne nouvelle version %s est disponible
+sCannotGetNewVerList=Liste des nouvelles versions indisponible
+
+
+[OSVersion]
+;lazbbosver
+Home=Famille
+Professional=Entreprise
+Server=Serveur
+00000=Version inconnue
+10240=v 1507 "Juillet 2015"
+10586=v 1511 "Novembre 2015"
+14393=v 1607 "Juillet 2016 (Màj Anniversaire)"
+15063=v 1703 "Avril 2017 (Màj Createurs)"
+16299=v 1709 "Octobre 2017(Màj Fall Créateurs)"
+17134=v 1803 "Avril 2018"
+17763=v 1809 "Octobre 2018"
+18362=v 1903 "Mai 2019"
+18363=v 1909 "Novembre 2019"
+19041=v 2004 "Mai 2020"
+19042=v 20H2 "Octobre 2020"
+19043=v 21H1 "Mai 2021"
+19044=v 21H2 "Novembre 2021"
+19045=v 22H2 "Octobre 2022"
+
+22000=v 21H2 "Octobre 2021 Version initiale"
+22621=v 22H2 "Septembre 2022"
+22631=v 23H2 "Octobre 2023"
+26100=v 24H2 "Octobre 2024"
+26200=v 25H2 "Octobre 2025"
+
+[AboutBox]
+Caption=A propos de %s
+sLastUpdateSearch=Dernière recherche de mise à jour
+sUpdateAvailable=Nouvelle version %s disponible. Cliquer pour la télécharger
+sNoUpdateAvailable=%s est à jour.
+LUpdate.Caption=Recherche de mise à jour
+LProgPage.Caption=Page d'accueil du programme
+LWebSite.Caption=Page d'accueil du site Web
+LSourceCode.Caption=Page Web du code source
+UrlProgSite=/wiki/Accueil
+
+[idHttpErr]
+idSSLLibraryNotFound=Impossible de charger la bibibliothèque SSL
+IdUnknownProtocol=Protocole inconnu
+IdHostNotFound=Hôte non trouvé
+idHTTP302=Page redirigée provisoirement (302)
+IdUnknownError=Erreur inconnue: %s
+
+[HttpErr]
+;Http error messages
+SErrInvalidProtocol=Protocole "%s" invalide
+SErrReadingSocket=Erreur de lecture des données à partir du socket
+SErrInvalidProtocolVersion=Version de protocole invalide en réponse: %s
+SErrInvalidStatusCode=Code de statut de réponse invalide: %s
+SErrUnexpectedResponse=Code de statut de réponse non prévu: %s
+SErrChunkTooBig=Bloc trop grand
+SErrChunkLineEndMissing=Fin de ligne du bloc manquante
+SErrMaxRedirectsReached=Nombre maximum de redirections atteint: %s
+
+;Socket error messages
+strHostNotFound=Résolution du nom d'hôte pour "%s" impossible.
+strSocketCreationFailed=Echec de la création du socket: %s
+strSocketBindFailed=Echec de liaison du socket: %s
+strSocketListenFailed=Echec de l'écoute sur le port n° %s, erreur %s
+strSocketConnectFailed=Echec de la connexion à %s
+strSocketAcceptFailed=Connexion refusée d'un client sur le socket: %s, erreur %s
+strSocketAcceptWouldBlock=La connexion pourrait bloquer le socket: %s
+strSocketIOTimeOut=Impossible de fixer le timeout E/S à %s
+strErrNoStream=Flux du socket non assigné
+
+; SSL Error
+sNoInstalledSSL=Bibliothèques SSL non installées
+
+[UpdateDlg]
+Caption=Mise à jour de %s
+BtnDownload.Caption=Télécharger
+BtnUpdate.Caption=Mettre à jour
+BtnAbort.Caption-Abandonner
+sUpdtAvailable=Nouvelle version %s disponible. Cliquez sur le bouton "Télécharger"
+sNoUpdtAvailable=%s est à jour
+sUpdtInstall=Cliquer sur le bouton "Mettre à jour" pour installer la mise à jour
+DlError=Erreur de téléchargement
+ZipError=Erreur archive

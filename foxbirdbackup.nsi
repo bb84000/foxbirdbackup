@@ -1,10 +1,12 @@
 ; NSIS Installation script for 32/64 bit Foxbirdbackup
-; bb - sdtp - November 2022
+; bb - sdtp - October 2025
 ;
 ; 22/10/2022 Replaced onInit with a custom page to check running app and previous versions
+; 24/10/2025 Channged with OpenSSL version 1.3 - always install in applilcation folder
+; Changed language files scheme
 ;------------------------------------------------------------------------------------------
 
-!define FileVersion "1.0.0.2"
+!define FileVersion "1.0.0.3"
 
  Unicode true
 
@@ -190,23 +192,21 @@ Section "Dummy Section" SecDummy
   ; with 64 or 32 in their name, the renamed
   File  "${source_dir}\${prog_name}win64.exe"
   File  "${source_dir}\${prog_name}win32.exe"
-  File "/oname=libeay3264.dll" "${lazarus_dir}\openssl\win64\libeay32.dll"
-  File "/oname=ssleay3264.dll" "${lazarus_dir}\openssl\win64\ssleay32.dll"
-  File "/oname=libeay3232.dll" "${lazarus_dir}\openssl\win32\libeay32.dll"
-  File "/oname=ssleay3232.dll" "${lazarus_dir}\openssl\win32\ssleay32.dll"
 
   ${If} ${RunningX64}  ; change registry entries and install dir for 64 bit
      StrCpy $exe_to_inst "64.exe"
      StrCpy $dll_to_inst "64.dll"
      StrCpy $exe_to_del "32.exe"
      StrCpy $dll_to_del "32.dll"
-     StrCpy $sysfolder "$WINDIR\sysnative"
+     File "${lazarus_dir}\openssl\libssl-3-x64.dll"
+     File "${lazarus_dir}\openssl\libcrypto-3-x64.dll"
   ${Else}
      StrCpy $exe_to_inst "32.exe"
      StrCpy $dll_to_inst "32.dll"
      StrCpy $exe_to_del "64.exe"
      StrCpy $dll_to_del "64.dll"
-     StrCpy $sysfolder "$WINDIR\system32"
+     File "${lazarus_dir}\openssl\libssl-3.dll"
+     File "${lazarus_dir}\openssl\libcrypto-3.dll"
   ${EndIf}
   
   SetOutPath "$INSTDIR"
@@ -214,23 +214,11 @@ Section "Dummy Section" SecDummy
   Delete /REBOOTOK "$INSTDIR\${prog_name}.exe"
   Delete /REBOOTOK "$INSTDIR\libeay32.dll"
   Delete /REBOOTOK "$INSTDIR\\ssleay32.dll"
+
   ; Rename 32 or 64 files
   Rename /REBOOTOK "$INSTDIR\${prog_name}win$exe_to_inst" "$INSTDIR\${prog_name}.exe"
-  ; Install ssl libraries if not already in system folder
-  IfFileExists "$sysfolder\libeay32.dll" ssl_lib_found ssl_lib_not_found
-  ssl_lib_not_found:
-    File "${lazarus_dir}\openssl\OpenSSL License.txt"
-    Rename /REBOOTOK "$INSTDIR\libeay32$dll_to_inst" "$INSTDIR\libeay32.dll"
-    Rename /REBOOTOK "$INSTDIR\ssleay32$dll_to_inst" "$INSTDIR\\ssleay32.dll"
-    Goto ssl_lib_set
-  ssl_lib_found:
-    Delete "$INSTDIR\libeay32$dll_to_inst"
-    Delete "$INSTDIR\ssleay32$dll_to_inst"
-  ssl_lib_set:
   ; delete non used files
   Delete "$INSTDIR\${prog_name}win$exe_to_del"
-  Delete "$INSTDIR\libeay32$dll_to_del"
-  Delete "$INSTDIR\ssleay32$dll_to_del"
   ; Install other files
   File "${source_dir}\licensf.txt"
   File "${source_dir}\license.txt"
@@ -238,9 +226,19 @@ Section "Dummy Section" SecDummy
   File "${source_dir}\history.txt"
   File "${source_dir}\${prog_name}.txt"
   File "${source_dir}\${prog_name}.lng"
-
+  ; delete old lng file
+  IfFileExists "$INSTDIR\${prog_name}.lng" 0 +2
+  Delete "$INSTDIR\${prog_name}.lng"
+  ; Install language files
+  CreateDirectory "$INSTDIR\lang"
+  SetOutPath "$INSTDIR\lang"
+  File "${source_dir}\lang\en.lng"
+  File "${source_dir}\lang\fr.lng"
+  ; restore install directory variable
+  SetOutPath "$INSTDIR"
   ; write out uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"
+  
   ; Get install folder size in var $estimated_size
   ${GetSize} "$INSTDIR" "/S=0K" $estimated_size $1 $2
   ; Get install date in var $install_date
@@ -284,6 +282,11 @@ Section Uninstall
   SetShellVarContext all
   ${If} ${RunningX64}
     SetRegView 64    ; change registry entries and install dir for 64 bit
+    Delete "$INSTDIR\libssl-3-x64.dll"
+    Delete "$INSTDIR\libcrypto-3-x64.dll"
+  ${Else}
+    Delete "$INSTDIR\libssl-3.dll"
+    Delete "$INSTDIR\libcrypto-3.dll"
   ${EndIf}
   ; add delete commands to delete whatever files/registry keys/etc you installed here.
   Delete /REBOOTOK "$INSTDIR\${prog_name}.exe"
@@ -292,6 +295,8 @@ Section Uninstall
   Delete "$INSTDIR\${prog_name}.lng"
   Delete "$INSTDIR\OpenSSL License.txt"
   Delete "$INSTDIR\uninst.exe"
+  ;RMDir /r "$INSTDIR\help"
+  RMDir /r "$INSTDIR\lang"
   
   ; remove shortcuts, if any.
   Delete  "$SMPROGRAMS\$(RemoveStr)\$(ProgramLnkStr)"
