@@ -136,6 +136,9 @@ Version 1.1.4.0 - 24/10/2025
 - Fixed too long filepaths breaking backups
 - Changed language translation scheme
 
+Version 1.1.4.1 - 27/10/2025
+- Added file too long message in log file
+- Correct version number
 
 
 

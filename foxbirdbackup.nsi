@@ -222,10 +222,9 @@ Section "Dummy Section" SecDummy
   ; Install other files
   File "${source_dir}\licensf.txt"
   File "${source_dir}\license.txt"
-  File "${lazarus_dir}\openssl\OpenSSL License.txt"
+  File "${lazarus_dir}\openssl\OpenSSL3 License.txt"
   File "${source_dir}\history.txt"
   File "${source_dir}\${prog_name}.txt"
-  File "${source_dir}\${prog_name}.lng"
   ; delete old lng file
   IfFileExists "$INSTDIR\${prog_name}.lng" 0 +2
   Delete "$INSTDIR\${prog_name}.lng"
@@ -294,6 +293,7 @@ Section Uninstall
   Delete "$INSTDIR\${prog_name}.txt"
   Delete "$INSTDIR\${prog_name}.lng"
   Delete "$INSTDIR\OpenSSL License.txt"
+  Delete "$INSTDIR\OpenSSL3 License.txt"
   Delete "$INSTDIR\uninst.exe"
   ;RMDir /r "$INSTDIR\help"
   RMDir /r "$INSTDIR\lang"

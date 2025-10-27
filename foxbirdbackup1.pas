@@ -1064,8 +1064,6 @@ Result:= True;
   Comment.Add(IsUtf82Ansi(Profiles[LBS.ItemIndex].Path));
   Comment.Add(ProfileString[ord(ProfileType)]);
   AZipper.FileComment:= Comment.Text;
-  //Folder:= 'C:\Users\Bernard\AppData\Roaming\Thunderbird\Profiles\jtkqolh0.default-esr\';
-  //  Folder:= 'C:\Users\Bernard\AppData\Roaming\Mozilla\Firefox\Profiles\aoze5q1l.default-release\';
   // Verify valid directory
   If DirectoryExists(Folder) then
   begin
@@ -1084,7 +1082,8 @@ Result:= True;
         begin
           // limit filename length
           if length(TheFileList[i]) <= MAX_PATH+4 then
-          FZEntry:= ZEntries.AddFileEntry(TheFileList[i],FEntry);
+          FZEntry:= ZEntries.AddFileEntry(TheFileList[i],FEntry)
+          else LogSession.add(DateTimeToStr(now)+' - Nom de fichier trop long : '+TheFileList[i]);
         end;
       end;
     finally
