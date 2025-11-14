@@ -300,7 +300,7 @@ begin
    // Chargement des chaînes de langue...
    // LangFile:= TBbIniFile.create(ExtractFilePath(Application.ExeName)+'foxbirdbackup.lng');
    if Langstr<>'fr' then LangStr:='en';
-   LangFile:= TBbIniFile.create(FBBExecPath+'lang\'+LangStr+'.lng');
+   LangFile:= TBbIniFile.create(FBBExecPath+'lang'+PathDelim+LangStr+'.lng');
 
    //LangIds:= TStringList.Create;
    //LangFound:= False;

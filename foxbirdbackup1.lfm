@@ -1,7 +1,7 @@
 object FoxBirdBack: TFoxBirdBack
-  Left = 783
+  Left = 532
   Height = 347
-  Top = 232
+  Top = 225
   Width = 661
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle

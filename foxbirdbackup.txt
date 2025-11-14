@@ -7,8 +7,9 @@ Mozilla Firefox  profiles.
 Thunderbird profiles
 
 INSTALLATION
-Extract archive and run InstallFireback.exe, then follow instructions of the setup program.
+Windows: Extract archive and run InstallFireback.exe, then follow instructions of the setup program.
 Installer install the proper version regarding 32 or 64 bit OS.
+Linux: Extract linux archive in a folder.
 
 USAGE
 The first panel, Backup creation, lists current user profiles.
@@ -21,7 +22,8 @@ Imported archives are then listed in the second panel. Modifications include
 change of profile name and default activation of a profile.
 
 UNINSTALLATION
-Use control panel's program management system to uninstall the program.
+Windows: Use control panel's program management system to uninstall the program.
+Linux: Delete files extracted on install.
 
 NOTICE
 Fireback software can be used free of charge for a non commercial use.
@@ -39,9 +41,10 @@ Mozilla Firefox
 Thunderbird
 
 INSTALLATION
-Extraire l'archive et exécuter InstallFireback.exe, puis suivre les instructions
+Windows: Extraire l'archive et exécuter InstallFireback.exe, puis suivre les instructions
 du programme d'installation.
 L'installateur installe la version correspondant au SE, 32 ou 64 bits.
+Linux: Extraire l'archive Linux dans un répertoire.
 
 UTILISATION
 Le premier onglet, Création de sauvegardes, liste les profils de
@@ -56,8 +59,9 @@ Il peut importer une sauvegarde archivée externe. Les archives importée sont e
 dans le second onglet.
 
 DESINSTALLATION
-Utiliser le système de gestion de programmes du panneau de configuration pour
+Windows: Utiliser le système de gestion de programmes du panneau de configuration pour
 désinstaller le programme.
+Linux: Supprimer les fichiers extraits lors de l'installation.
 
 NOTICE
 Le logiciel FoxBirdBackup peut être utilisé gratuitement pour une utilisation non commerciale.
@@ -68,6 +72,6 @@ ou détruire des données critiques.
 
 Les noms et logos Mozilla, Firefox sont la propriétés de la Fondation Mozilla.
 
-SDTP - bb95 - june 2019
+SDTP - bb95 - october 2025
 Web : http://www.sdtp.com
 
